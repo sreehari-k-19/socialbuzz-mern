@@ -5,30 +5,78 @@ import { UilPlayCircle } from "@iconscout/react-unicons";
 import { UilLocationPoint } from "@iconscout/react-unicons";
 import { UilSchedule } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
-
+import { useDispatch, useSelector } from "react-redux";
+import { uploadPost } from "../../redux/Slice/PostSlice";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./postShare.scss";
 
 const PostShare = () => {
+
+  const dispatch = useDispatch()
+  // const loading = useSelector((state) => state.upload.uploading)
+  const loading = false;
+  const { user } = useSelector((state) => state.auth.authData)
+
   const [image, setImage] = useState(null);
   const imageRef = useRef();
+  const descRef = useRef()
 
+  const validFileTypes = ['image/jpg', 'image/jpeg', 'image/png'];
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
-      setImage(img)
+      if (!validFileTypes.find(type => type === img.type)) {
+        toast.error('Please only upload image!', {
+          position: "top-center",
+          autoClose: false,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      } else {
+        setImage(img)
+      }
     }
   };
-const handleSubmit =(e)=>{
-  e.preventDefault();
-  
-}
+
+  const reset = () => {
+    setImage(null);
+    descRef.current.value = ""
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newPost = {
+      userId: user._id,
+      desc: descRef.current.value
+    }
+    if (image) {
+      const data = new FormData()
+      const filename = Date.now() + image.name;
+      data.append("userId", user._id)
+      data.append("desc", descRef.current.value)
+      data.append("name", filename)
+      data.append("file", image)
+      console.log("daata iamg", data)
+      dispatch(uploadPost(data))
+    }
+    reset()
+  }
+
+
   return (
+
     <div className="PostShare">
       <img src={ProfileImage} alt="" />
+
       <div>
-        <input type="text" placeholder="What's Happening" />
+        <input type="text" ref={descRef} required placeholder="What's Happening" />
         <div className="postOptions">
-          <div className="option" style={{ color: "#4CB256" }} onClick={()=>imageRef.current.click()}>
+          <div className="option" style={{ color: "#4CB256" }} onClick={() => imageRef.current.click()}>
             <UilScenery />
             Photo
           </div>
@@ -44,7 +92,7 @@ const handleSubmit =(e)=>{
             <UilSchedule />
             Schedule
           </div>
-          <button className="button ps-button"onClick={handleSubmit}>Share</button>
+          <button className="button ps-button" onClick={handleSubmit} disabled={loading}>{loading ? "Uploding.." : "Share"}</button>
           <div style={{ display: "none" }}>
             <input
               type="file"
@@ -56,8 +104,8 @@ const handleSubmit =(e)=>{
         </div>
         {image && (
           <div className="previewImage">
-            <UilTimes onClick={()=>{setImage(null)}} />
-            <img src={URL.createObjectURL(image)} alt=""/>
+            <UilTimes onClick={() => { setImage(null) }} />
+            <img src={URL.createObjectURL(image)} alt="" />
           </div>
         )}
       </div>

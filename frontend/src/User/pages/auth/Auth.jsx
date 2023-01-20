@@ -3,15 +3,16 @@ import { useState } from "react";
 import "./Auth.scss";
 import Logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
-import { logIn, signUp } from "../../redux/Slice/AuthSlice";
+import { changeForm, logIn, signUp } from "../../redux/Slice/AuthSlice";
 
 
 const Auth = () => {
 
   const dispatch = useDispatch()
-  const loading = useSelector((state) => state.auth.loading)
+  const { loading, isSignup } = useSelector((state) => state.auth)
+  const error = useSelector((state) => state.auth.error)
 
-  const [isSignup, setisSignup] = useState(true)
+  // const [isSignup, setisSignup] = useState(false)
 
 
   const [data, setData] = useState({ firstname: "", lastname: "", password: "", confirmpass: "", username: "" })
@@ -20,6 +21,7 @@ const Auth = () => {
     setData({ ...data, [e.target.name]: e.target.value })
   }
   const handleSubmit = (e) => {
+    e.preventDefault();
     if (isSignup) {
       dispatch(signUp(data))
     } else {
@@ -44,6 +46,17 @@ const Auth = () => {
       <div className="a-right">
         <form className="infoForm authForm" onSubmit={handleSubmit} >
           <h3>{isSignup ? "Sign up" : "Sign in"}</h3>
+          <span
+            style={{
+              color: "red",
+              fontSize: "12px",
+              alignSelf: "flex-end",
+              marginRight: "5px",
+              display: error ? "block" : "none",
+            }}
+          >
+            {error}
+          </span>
           {isSignup && (
             <div>
               <input
@@ -100,7 +113,7 @@ const Auth = () => {
           </div>
 
           <div>
-            <span style={{ fontSize: "12px", cursor: "pointer" }} onClick={() => { setisSignup((prev) => !prev); resetForm() }}>
+            <span style={{ fontSize: "12px", cursor: "pointer" }} onClick={() => { dispatch(changeForm(isSignup)); resetForm() }}>
               {isSignup ? "Already have an account. Login!" : "Don't have an account please sign up"}
             </span>
           </div>

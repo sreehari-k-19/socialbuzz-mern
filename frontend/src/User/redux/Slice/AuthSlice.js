@@ -5,69 +5,129 @@ import { BaseUrl } from "../Url";
 const initialState = {
     authData: null,
     loading: false,
-    error: false
+    error: false,
+    isSignup: false,
 };
 
 export const signUp = createAsyncThunk("auth/signup", async (formData, { rejectWithValue }) => {
     try {
-        const { data } = await axios.post(`${BaseUrl}/auth/register`, formData);
-        return data;
+        alert("res_start")
+        const response = await axios.post(`${BaseUrl}/auth/register`, formData);
+        alert("res")
+        // console.log(response)
+        // alert("res")
+        return response.data;
     } catch (error) {
-        console.log(error.data)
-        return rejectWithValue(error.data)
+        alert("error")
+        console.log(error.response);
+        console.log(error.response.data);
+        return rejectWithValue(error.response.data)
     }
 })
 
 export const logIn = createAsyncThunk("auth/login", async (formData, { rejectWithValue }) => {
     try {
-        const { data } = axios.post(`${BaseUrl}/auth/login`, formData)
-        alert()
+        const { data } = await axios.post(`${BaseUrl}/auth/login`, formData)
+
         return data;
     } catch (error) {
-        console.log(error.data)
+        console.log(error.response.data)
+        return rejectWithValue(error.response.data)
     }
 })
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
-    extraReducers: {
-        [signUp.pending]: (state, action) => {
+    reducers: {
+        changeForm(state, action) {
+            return {
+                authData: null,
+                loading: false,
+                error: false,
+                isSignup: !action.payload,
+            }
+        }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(signUp.pending, (state, action) => {
             return {
                 ...state, loading: true, error: false
             };
-        },
-        [signUp.fulfilled]: (state, action) => {
-            alert()
+        });
+        builder.addCase(signUp.fulfilled, (state, action) => {
+            console.log(action)
+            alert("s")
             localStorage.setItem('profile', JSON.stringify(action?.payload))
             return {
                 ...state, authData: action?.payload, loading: false, error: false
             };
-        },
-        [signUp.rejected]: (state, action) => {
+        });
+        builder.addCase(signUp.rejected, (state, action) => {
+            alert("r")
+            console.log("ac", action)
+            console.log("ac", action.error)
+            alert("r")
             return {
-                ...state, loading: false, error: true,
+                ...state, loading: false, error: action.payload,
             }
-        },
-        [logIn.pending]: (state, action) => {
+        })
+        builder.addCase(logIn.pending, (state, action) => {
             return {
                 ...state, loading: true, error: false
             };
-        },
-        [logIn.fulfilled]: (state, action) => {
+        });
+        builder.addCase(logIn.fulfilled, (state, action) => {
             localStorage.setItem('profile', JSON.stringify(action?.payload))
             return {
                 ...state, authData: action?.payload, loading: false, error: false
             };
-        },
-        [logIn.rejected]: (state, action) => {
-            return {
-                ...state, loading: false, error: true,
-            }
-        },
+        });
+        builder.addCase(logIn.rejected, (state, action) => {
 
+            return {
+                ...state, loading: false, error:action.payload,
+            }
+        })
     }
-})
 
+})
+export const {changeForm}=authSlice.actions
 export default authSlice.reducer;
+
+//   extraReducers: {
+//         [signUp.pending]: (state, action) => {
+//             return {
+//                 ...state, loading: true, error: false
+//             };
+//         },
+//         [signUp.fulfilled]: (state, action) => {
+//             alert()
+//             localStorage.setItem('profile', JSON.stringify(action?.payload))
+//             return {
+//                 ...state, authData: action?.payload, loading: false, error: false
+//             };
+//         },
+//         [signUp.rejected]: (state, action) => {
+//             return {
+//                 ...state, loading: false, error: true,
+//             }
+//         },
+//         [logIn.pending]: (state, action) => {
+//             return {
+//                 ...state, loading: true, error: false
+//             };
+//         },
+//         [logIn.fulfilled]: (state, action) => {
+//             localStorage.setItem('profile', JSON.stringify(action?.payload))
+//             return {
+//                 ...state, authData: action?.payload, loading: false, error: false
+//             };
+//         },
+//         [logIn.rejected]: (state, action) => {
+//             return {
+//                 ...state, loading: false, error: true,
+//             }
+//         },
+
+//     }

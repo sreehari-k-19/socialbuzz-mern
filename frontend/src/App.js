@@ -5,6 +5,7 @@ import Profile from './User/pages/profile/Profile'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminRouter from './Admin/AdminRouter';
 import { useSelector } from 'react-redux';
+import { ToastContainer} from 'react-toastify';
 import './App.scss';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/auth" element={user ? <Navigate to="../home" /> : <Auth />} />
         
       </Routes>
+      <ToastContainer />
     </div>
   );
 }

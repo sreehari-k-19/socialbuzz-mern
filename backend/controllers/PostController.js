@@ -1,10 +1,20 @@
 import PostModel from "../models/postModels.js";
 import UserModel from "../models/userModels.js";
 import mongoose from "mongoose";
+import { S3Client, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import dotenv from 'dotenv'
+dotenv.config()
+
+const bucketName = process.env.AWS_BUCKET_NAME
+const region = process.env.AWS_BUCKET_REGION
+const accessKeyId = process.env.AWS_ACCESS_KEY
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 
 // createPost
 
 export const createPost = async (req, res) => {
+    console.log("post details",req.body);
     const newPost = new PostModel(req.body)
     try {
         await newPost.save()
@@ -29,6 +39,7 @@ export const getPost = async (req, res) => {
 }
 
 //updatePost
+
 export const updatePost = async (req, res) => {
     const postId = req.params.id
     const { userId } = req.body
@@ -89,7 +100,16 @@ export const likePost = async (req, res) => {
 // getAllposts
 
 export const getTimelinePosts = async (req, res) => {
-    const userId = req.params.id
+    console.log("gettimelineposts")
+    const userId = req.params.id;
+    const s3Client = new S3Client({
+        correctClockSkew: true,
+        region,
+        credentials: {
+            accessKeyId,
+            secretAccessKey
+        }
+    })
     try {
         const currentUserPosts = await PostModel.find({ userId: userId })
         const followingPosts = await UserModel.aggregate([
@@ -111,9 +131,19 @@ export const getTimelinePosts = async (req, res) => {
                 }
             }
         ])
-        res.status(200).json(currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
+        const posts=currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
             return b.createdAt - a.createdAt;
-        }));
+        })
+        for(const post of posts){
+            const params = {
+                Bucket: bucketName,
+                Key: post.image
+            }
+            const command = new GetObjectCommand(params);
+            const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
+            post.image=url
+        }
+        res.status(200).json(posts)
     } catch (error) {
         res.status(500).json(error)
     }

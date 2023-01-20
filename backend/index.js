@@ -6,6 +6,7 @@ import cors from "cors"
 import AuthRoute from './routes/AuthRoute.js';
 import UserRoute from './routes/UserRoute.js';
 import PostRoute from './routes/PostRoute.js';
+import UploadRoute from './routes/UploadRoute.js';
 
 const app = express();
 app.use(bodyParser.json({limit:"30mb", extended:true}));
@@ -22,3 +23,4 @@ mongoose.connect(process.env.MONGODB,{useNewUrlParser:true, useUnifiedTopology:t
 app.use('/auth',AuthRoute)  
 app.use('/user',UserRoute)
 app.use('/post',PostRoute)
+app.use('/upload',UploadRoute)

@@ -1,0 +1,103 @@
+import express from 'express';
+import AWS from "aws-sdk";
+import multer from 'multer';
+// import multerS3 from "multer-s3";
+import dotenv from 'dotenv';
+const router = express.Router()
+dotenv.config()
+
+// import multer from 'multer'
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "public/images");
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, req.body.name);
+//     },
+// });
+// const upload = multer({ storage: storage });
+
+// router.post('/', upload.single("file", (req, res) => {
+//     try {
+//         console.log("file uploaded");
+//         return res.status(200).json("file uploaded")
+//     } catch (error) {
+
+//     }
+// }))
+
+// .............................
+
+// const s3 = new AWS.S3({
+//     accessKeyId: process.env.ACCESS_ID,
+//     secretAccessKey: process.env.SECRET_KEY,
+//     region: 'us-west-1'
+//   });
+
+//   const upload = multer({
+//     storage: multerS3({
+//       s3: s3,
+//       bucket: 'socialbuzz',
+//       acl: 'public-read',
+//       metadata: function (req, file, cb) {
+//         cb(null, { fieldName: file.fieldname });
+//       },
+//       key: function (req, file, cb) {
+//         cb(null, Date.now().toString())
+//       }
+//     })
+//   });
+console.log(process.env.ACCESS_ID,process.env.SECRET_KEY)
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: 'ap-south-1',
+    correctClockSkew: true,
+    endpoint: 's3.ap-south-1.amazonaws.com'
+});
+
+const s3 = new AWS.S3();
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    }
+});
+
+router.post('/', upload.single("file"), (req, res) => {
+    console.log("scs")
+    const file = req.file;
+    const bucketName = 'socialbuzz';
+    const key = `posts/${file.originalname}`;
+
+    const params = {
+        Bucket: bucketName,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype
+    };
+
+    s3.upload(params, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send(err);
+        } else {
+            res.send({
+                location: data.Location
+            });
+        }
+    });
+})
+// router.post('/',(req,res)=>{
+//     console.log("fineede")
+//     console.log(req.file)
+//     console.log(req.files)
+// })
+
+
+//.................
+
+
+export default router;

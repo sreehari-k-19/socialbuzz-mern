@@ -5,9 +5,10 @@ import Heart from "../../../img/Like.png";
 import NotLike from "../../../img/notlike.png";
 import "./post.scss";
 const Post = ({ data }) => {
+  console.log("post detailsss",data.image)
   return (
     <div className="Post">
-      <img src={data.img} alt="" />
+      <img src={data.image} alt="" />
       <div className="postReact">
         <img src={data.liked ? Heart : NotLike} alt="" />
         <img src={Comment} alt="" />
