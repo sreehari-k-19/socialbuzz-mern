@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { PostsData } from "../../Data/PostsData";
 import { fetchPosts } from "../../redux/Slice/PostSlice";
+import CircularLoading from "../circularLoading/CircularLoading";
 import Post from "../post/Post";
 import './posts.scss';
 
@@ -17,7 +18,7 @@ const Posts = () => {
 
   return (
     <div className="Posts">
-      {loading ? "fetching posts..." : posts?.map((post, id) => {
+      {loading ? <CircularLoading/> : posts?.map((post, id) => {
         return <Post data={post} id={id} />;
       })}
     </div>

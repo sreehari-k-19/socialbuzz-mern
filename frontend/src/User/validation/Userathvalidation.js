@@ -1,23 +1,35 @@
-export const AuthValidation = {
-    username: {
-        required: "Email is required",
-        pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: "Invalid email address",
-        },
-    },
-    password: {
-        required: "Password is required",
-        minLength: {
-            value: 2,
-            message: "Password must be at least 5 characters",
-        },
-    },
-    firstname: {
-        required: "first name is required",
-        minLength: {
-            value: 3,
-            message: "first name must have at least 3 characters"
-        }
-    }
-}
+import * as Yup from 'yup';
+
+export const signupvalidationSchema = Yup.object().shape({
+    lastname: Yup.string().required('lastname is required'),
+    firstname: Yup.string()
+      .required('first name is required')
+      .min(3, 'first name must be at least 6 characters')
+      .max(20, 'first name must not exceed 20 characters'),
+    username: Yup.string()
+      .required('Email is required')
+      .email('Email is invalid'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(3, 'Password must be at least 3 characters')
+      .max(40, 'Password must not exceed 40 characters'),
+    confirmpass: Yup.string()
+      .required('Confirm Password is required')
+      .oneOf([Yup.ref('password'), null], 'Confirm Password does not match'),
+      acceptTerms:Yup.bool().oneOf([true], 'Accept Terms is required')
+  });
+ export  const loginvalidationSchema = Yup.object().shape({
+    username: Yup.string()
+      .required('Email is required')
+      .email('Email is invalid'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(3, 'Password must be at least 3 characters')
+      .max(40, 'Password must not exceed 40 characters'),
+  });
+
+
+
+
+
+

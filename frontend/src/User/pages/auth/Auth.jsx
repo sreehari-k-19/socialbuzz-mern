@@ -4,6 +4,9 @@ import "./Auth.scss";
 import Logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { changeForm, logIn, signUp } from "../../redux/Slice/AuthSlice";
+import { useForm } from "react-hook-form";
+import { signupvalidationSchema, loginvalidationSchema } from '../../validation/Userathvalidation'
+import { yupResolver } from '@hookform/resolvers/yup';
 
 
 const Auth = () => {
@@ -11,27 +14,40 @@ const Auth = () => {
   const dispatch = useDispatch()
   const { loading, isSignup } = useSelector((state) => state.auth)
   const error = useSelector((state) => state.auth.error)
-
-  // const [isSignup, setisSignup] = useState(false)
-
-
   const [data, setData] = useState({ firstname: "", lastname: "", password: "", confirmpass: "", username: "" })
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value })
   }
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (isSignup) {
-      dispatch(signUp(data))
-    } else {
-      dispatch(logIn(data))
-    }
-  }
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(isSignup ? signupvalidationSchema : loginvalidationSchema),
+    mode: 'onBlur',
+  });
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (isSignup) {
+  //     dispatch(signUp(data))
+  //   } else {
+  //     dispatch(logIn(data))
+  //   }
+  // }
 
   const resetForm = () => {
     setData({ firstname: "", lastname: "", password: "", confirmpass: "", username: "" })
   }
+
+  const handlesub = (data) => {
+    console.log("userDataaaa", data)
+    alert()
+
+  };
+
   return (
     <div className="Auth">
       <div className="a-left">
@@ -44,7 +60,8 @@ const Auth = () => {
       {/* <SignUp /> */}
       {/* rightSide */}
       <div className="a-right">
-        <form className="infoForm authForm" onSubmit={handleSubmit} >
+        {/* onSubmit={handleSubmit} */}
+        <form className="infoForm authForm" onSubmit={handleSubmit(handlesub)} >
           <h3>{isSignup ? "Sign up" : "Sign in"}</h3>
           <span
             style={{
@@ -59,61 +76,87 @@ const Auth = () => {
           </span>
           {isSignup && (
             <div>
-              <input
-                type="text"
-                placeholder="First Name"
-                className="infoInput"
-                name="firstname"
-                onChange={handleChange}
-                value={data.firstname}
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                className="infoInput"
-                name="lastname"
-                onChange={handleChange}
-                value={data.lastname}
-              />
+              <div>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  className="infoInput"
+                  name="firstname"
+                  {...register('firstname')}
+                  onChange={handleChange}
+                  value={data.firstname}
+                />
+                <p>{errors.firstname?.message}</p>
+              </div>
+              <div>
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  className="infoInput"
+                  name="lastname"
+                  {...register('lastname')}
+                  onChange={handleChange}
+                  value={data.lastname}
+                />
+                <p>{errors.lastname?.message}</p>
+              </div>
             </div>
           )}
-
-
           <div>
-            <input
-              type="text"
-              className="infoInput"
-              name="username"
-              placeholder="Usernames"
-              onChange={handleChange}
-              value={data.username}
-            />
+            <div className="userNamediv">
+              <input
+                type="text"
+                className="infoInput"
+                name="username"
+                placeholder="Usernames"
+                {...register('username')}
+                onChange={handleChange}
+                value={data.username}
+              />
+              <p>{errors.username?.message}</p>
+            </div>
           </div>
-
           <div>
-            <input
-              type="password"
-              className="infoInput"
-              name="password"
-              placeholder="Password"
-              onChange={handleChange}
-              value={data.password}
-            />
-            {isSignup && (
-
+            <div>
               <input
                 type="password"
                 className="infoInput"
-                name="confirmpass"
-                placeholder="Confirm Password"
+                name="password"
+                placeholder="Password"
+                {...register('password')}
                 onChange={handleChange}
-                value={data.confirmpass}
+                value={data.password}
               />
-            )}
+              <p>{errors.password?.message}</p>
+            </div>
+            <div>
+              {isSignup && (
+                <input
+                  type="password"
+                  className="infoInput"
+                  name="confirmpass"
+                  placeholder="Confirm Password"
+                  {...register('confirmpass')}
+                  onChange={handleChange}
+                  value={data.confirmpass}
+                />
+              )}
+              <p>{errors.confirmpass?.message}</p>
+            </div>
           </div>
-
+          {
+            isSignup && (
+              <div>
+                <input type="checkbox" name="acceptTerms" {...register('acceptTerms')} />
+                <div>
+                  <label htmlFor="acceptTerms">Accept terms and conditions</label>
+                  <p>{errors.acceptTerms?.message}</p>
+                </div>
+              </div>
+            )
+          }
           <div>
-            <span style={{ fontSize: "12px", cursor: "pointer" }} onClick={() => { dispatch(changeForm(isSignup)); resetForm() }}>
+            <span style={{ fontSize: "12px", cursor: "pointer" }} onClick={() => { dispatch(changeForm(isSignup)); resetForm(); reset() }}>
               {isSignup ? "Already have an account. Login!" : "Don't have an account please sign up"}
             </span>
           </div>
