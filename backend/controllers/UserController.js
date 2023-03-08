@@ -1,5 +1,6 @@
 import UserModel from "../models/userModels.js";
 import bcrypt from "bcrypt";
+import  jwt from 'jsonwebtoken';
 
 // get user
 export const getUser = async (req, res) => {
@@ -22,17 +23,22 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const id = req.params.id;
-    console.log(id, req.body)
-    const { currentUserId, currentUserAdminStatus, password } = req.body;
-
-    if (id === currentUserId || currentUserAdminStatus) {
+    console.log(id, req.body, "jsdkfjskfjkfkshadjsfh")
+    const { _id, currentUserAdminStatus, password } = req.body;
+    if (id === _id) {
         try {
             if (password) {
                 const salt = await bcrypt.genSalt(10);
                 req.body.password = await bcrypt.hash(password, salt)
             }
             const user = await UserModel.findByIdAndUpdate(id, req.body, { new: true })
-            res.status(200).json(user)
+            const token = jwt.sign(
+                { username: user.username, id: user._id },
+                process.env.JWTKEY,
+                { expiresIn: "1h" }
+            );
+            console.log({ user, token })
+            res.status(200).json({ user, token });
 
         } catch (errors) {
             res.status(500).json(error)
@@ -77,7 +83,7 @@ export const followUser = async (req, res) => {
                 await followUser.updateOne({ $push: { followers: currentUserId } })
                 await followingUser.updateOne({ $push: { following: id } })
                 res.status(200).json("user followed")
-            }else{
+            } else {
                 res.status(403).json("user is already followed by you")
             }
 
@@ -104,7 +110,7 @@ export const UnFollowUser = async (req, res) => {
                 await followUser.updateOne({ $pull: { followers: currentUserId } })
                 await followingUser.updateOne({ $pull: { following: id } })
                 res.status(200).json("user unfollowed")
-            }else{
+            } else {
                 res.status(403).json("user is not followed by you")
             }
 

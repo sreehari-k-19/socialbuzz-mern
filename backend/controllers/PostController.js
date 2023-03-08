@@ -141,8 +141,10 @@ export const getTimelinePosts = async (req, res) => {
             }
             const command = new GetObjectCommand(params);
             const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
+            console.log(url,"image urlll")
             post.image=url
         }
+        console.log(posts)
         res.status(200).json(posts)
     } catch (error) {
         res.status(500).json(error)

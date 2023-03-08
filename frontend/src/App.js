@@ -5,13 +5,13 @@ import Profile from './User/pages/profile/Profile'
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminRouter from './Admin/AdminRouter';
 import { useSelector } from 'react-redux';
-import { ToastContainer} from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import './App.scss';
+import Emailverify from './User/components/emailVerify/Emailverify';
 
 function App() {
-  const user = useSelector((state)=>state.auth.authData
-  );
-  console.log("userr.....",user)
+  const {user} = useSelector((state) => state.auth.authData);
+  console.log("userr.....", user)
   return (
     <div className="App">
       <div className="blur" style={{ top: '-18%', right: '0' }}> </div>
@@ -20,7 +20,8 @@ function App() {
         <Route path="/" element={user ? <Navigate to="home" /> : <Navigate to="auth" />} />
         <Route path="/home" element={user ? <Home /> : <Navigate to="../auth" />} />
         <Route path="/auth" element={user ? <Navigate to="../home" /> : <Auth />} />
-        
+        <Route path="/auth/:id/verify/:token" element={<Emailverify />} />
+        <Route path="/profile/:id" element={user ? <Profile /> : <Navigate to="../auth" />} />
       </Routes>
       <ToastContainer />
     </div>

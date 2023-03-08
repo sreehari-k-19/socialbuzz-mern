@@ -1,8 +1,6 @@
 @import "../../../variable.scss";
 
-
-
-.ProfileCard{
+.ProfileCard {
   border-radius: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -12,28 +10,45 @@
   background: $cardColor;
 }
 
-.ProfileImages{
+.ProfileImages {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  label{
+    cursor: pointer;
+  }
+  input[type="file"] {
+    display: none;
+  }
 }
 
-.ProfileImages>img:nth-of-type(1){
+.coverPicture {
   width: 100%;
+  position: relative;
 }
+// .coverPicture:hover::before {
+//   content: attr(title);
+//   background-color: black;
+//   color: white;
+//   padding: 4px;
+//   position: absolute;
+//   left: 50%;
+//   transform: translateX(-50%);
+//   white-space: nowrap;
+//   z-index: 1;
+// }
 
-.ProfileImages>img:nth-of-type(2)
-{
+.profilePicture {
   width: 6rem;
   border-radius: 50%;
-  position: absolute;
-  bottom: -3rem;
+  // position: absolute;
+  // bottom: -3rem;
   box-shadow: $profileShadow;
 }
 
-.ProfileName{
+.ProfileName {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,8 +56,7 @@
   gap: 10px;
 }
 
-.ProfileName>span:nth-of-type(1)
-{
+.ProfileName > span:nth-of-type(1) {
   font-weight: bold;
 }
 
@@ -89,12 +103,31 @@
   border-left: 2px solid $hrColor;
 }
 
-
-.ProfileCard>span{
-    font-weight: bold;
-    color: orange;
-    align-self: center;
-    margin-bottom: 1rem;
-    cursor: pointer;
+.ProfileCard > span {
+  font-weight: bold;
+  color: orange;
+  align-self: center;
+  margin-bottom: 1rem;
+  cursor: pointer;
 }
-
+.changeImage{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:25px;
+  h1{
+    margin: 0;
+  }
+  img{
+    min-width: 140px;
+    max-width: 220px;
+  }
+  button{
+    border: none;
+    background-color: rgb(44, 44, 175);
+    border-radius: 4px;
+    width: 80px;
+    padding: 10px;
+  }
+}

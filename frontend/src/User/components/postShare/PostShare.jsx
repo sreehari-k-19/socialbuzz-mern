@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { uploadPost } from "../../redux/Slice/PostSlice";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Profile from "../../../img/defaultProfile.png";
 import "./postShare.scss";
 
 const PostShare = () => {
@@ -16,8 +17,8 @@ const PostShare = () => {
   const dispatch = useDispatch()
   // const loading = useSelector((state) => state.upload.uploading)
   const loading = false;
-  const { user } = useSelector((state) => state.auth.authData)
-
+  const {user}  = useSelector((state) => state.auth.authData)
+  console.log(user, "usrrrr post share")
   const [image, setImage] = useState(null);
   const imageRef = useRef();
   const descRef = useRef()
@@ -47,13 +48,15 @@ const PostShare = () => {
     setImage(null);
     descRef.current.value = ""
   }
-
+  console.log(user._id,"userrridddd")
   const handleSubmit = async (e) => {
+    console.log(user, "usrrrr")
     e.preventDefault();
     const newPost = {
       userId: user._id,
       desc: descRef.current.value
     }
+ 
     if (image) {
       const data = new FormData()
       const filename = Date.now() + image.name;
@@ -71,7 +74,7 @@ const PostShare = () => {
   return (
 
     <div className="PostShare">
-      <img src={ProfileImage} alt="" />
+      <img src={user.profilePicture ? user.coverPicture : Profile} alt="" />
 
       <div>
         <input type="text" ref={descRef} required placeholder="What's Happening" />

@@ -5,18 +5,9 @@ import { toast} from 'react-toastify';
 
 const initialState = { posts: null, loading: false, error: false, uploading: false };
 
-// export const uploadImage = createAsyncThunk("upload", async (data, { rejectWithValue }) => {
-//     try {
-//         const response = await axios.post(`${BaseUrl}/upload`, data)
-//         return response.data;
-//     } catch (error) {
-//         return rejectWithValue(error.response.data)
-//     }
-// })
 
 export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectWithValue }) => {
     try {
-       
         alert()
         const response = await axios.post(`${BaseUrl}/upload`, data)
 
@@ -26,6 +17,15 @@ export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectW
     }
 })
 export const fetchPosts = createAsyncThunk("post/get",async(id,{rejectWithValue})=>{
+    try {
+        alert(id)
+        const response = await axios.get(`${BaseUrl}/post/${id}/timeline`)
+        return response.data
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+}) 
+export const likePost = createAsyncThunk("post/get",async(id,{rejectWithValue})=>{
     try {
         alert(id)
         const response = await axios.get(`${BaseUrl}/post/${id}/timeline`)

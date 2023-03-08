@@ -1,6 +1,9 @@
 import UserModel from "../models/userModels.js"
+import verificationModel from "../models/verficationModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { v4 as uuidv4 } from 'uuid';
+import { mailSender } from "../helpers/mailSender.js";
 
 export const registerUser = async (req, res) => {
     console.log("reg")
@@ -14,34 +17,103 @@ export const registerUser = async (req, res) => {
         const oldUser = await UserModel.findOne({ username })
         if (oldUser) {
             return res.status(500).send("username is already registerd")
-
             // return res.status(400).json("username is already started")
         }
         const user = await newUser.save()
-        // let user={
-        //     username:"abc",
-        //     _id:"12",
-        // }
-        const token = jwt.sign({
-            username: user.username, id: user._id
-        }, process.env.JWTKEY, { expiresIn: '1h' })
-        console.log(token)
-        res.status(200).json({ user, token })
+        console.log(user)
+        let token = await verificationModel.findOne({ userId: user._id });
+        if (!token) {
+            token = await new verificationModel({
+                userId: user._id,
+                token: uuidv4().toString("hex"),
+            }).save();
+
+        }
+        const url = `${process.env.VERI_URL}/auth/${user.id}/verify/${token.token}`;
+        console.log(url)
+        return res.status(500);
+        let sentMail = await mailSender(username, url).then((response) => {
+            return res.status(201).json({
+                msg: "you should receive an email"
+            })
+        }).catch((error) => {
+            return res.status(500).json({ error })
+        })
+
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
 }
 
+
+//verification
+
+export const verifiy = async (req, res) => {
+    try {
+        console.log(req.params.id, req.params.token, "verify")
+        const user = await UserModel.findOne({ _id: req.params.id });
+        console.log(user, "user")
+        if (!user) return res.status(400).send({ message: "Invalid link" });
+        if (!user.expiresAt) return res.status(200).send({ message: "user verified" });
+
+        const token = await verificationModel.findOne({
+            userId: user._id,
+            token: req.params.token,
+        })
+        if (!token) return res.status(400).send({ message: "Invalid link" });
+        // user.expiresAt = null;
+        console.log("1")
+           const updateUser = await UserModel.findOneAndUpdate(
+                { _id: req.params.id },
+                { $unset: { expiresAt: "" } },
+                { new: true }
+            );
+        // await UserModel.updateOne(
+        //     { _id: req.params.id },
+        //     { $unset: { expiresAt: 1 } }
+        // );
+        // console.log(updateUser.toObject());
+        console.log(2)
+        await user.save();
+        await token.remove();
+        res.status(200).send({ message: "Email verified successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "something went wrong" })
+    }
+
+}
+
+
 // login user
 
 export const loginUser = async (req, res) => {
-    console.log("user reggggggggggggggisr", req.body)
+    console.log("user loginn", req.body)
+
     const { username, password } = req.body
     try {
         const user = await UserModel.findOne({ username: username })
         if (user) {
+            console.log(user, "uesr")
+            if (user.expiresAt) {
+                console.log("expire at")
+                let token = await verificationModel.findOne({ userId: user._id });
+                if (!token) {
+                    token = await new verificationModel({
+                        userId: user._id,
+                        token: uuidv4().toString("hex"),
+                    }).save();
+                }
+                const url = `${process.env.VERI_URL}/auth/${user.id}/verify/${token.token}`;
+                console.log(url)
+                let sentMail = await mailSender(username, url).then((response) => {
+                    return res.status(201).json({ email: username })
+                }).catch((error) => {
+                    return res.status(500).json({ error })
+                })
+                return res.status(201).json({ email: username })
+            }
             const validity = await bcrypt.compare(password, user.password)
-            //   validity?res.status(200).json(user):res.status(400).json("Wrong password")
+            // validity?res.status(200).json(user):res.status(400).json("Wrong password")
 
             if (!validity) {
                 res.status(400).json("Wrong password")
@@ -49,7 +121,7 @@ export const loginUser = async (req, res) => {
                 const token = jwt.sign({
                     username: user.username, id: user._id
                 }, process.env.JWTKEY, { expiresIn: '1h' })
-                console.log(("login",token))
+                console.log(("login", token))
                 res.status(200).json({ user, token })
             }
 

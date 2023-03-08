@@ -1,0 +1,27 @@
+@import "../../../variable.scss";
+.emailSuccess {
+  height: 90vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  .successBox {
+    width: 70%;
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   h2{
+    color:#13D195;
+   }
+    button{
+        width:110px;
+        height: 35px;
+        background:$buttonBg;
+        border: none;
+        border-radius: 6px;
+        font-size: 19px;
+        color: white;
+    }
+  }
+}

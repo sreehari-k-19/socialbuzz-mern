@@ -3,11 +3,11 @@ import FollowersCard from '../followersCard/FollowersCard';
 import ProfieCard from '../profileCard/ProfieCard'
 import SearchBar from '../searchbar/SearchBar'
 import './profileSide.scss';
-const ProfilSide = () => {
+const  ProfilSide = () => {
   return (
     <div className="ProfilSide">
         <SearchBar/>
-        <ProfieCard/>
+        <ProfieCard location="homePage"/>
         <FollowersCard/>
     </div>
   )

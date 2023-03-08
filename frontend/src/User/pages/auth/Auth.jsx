@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import "./Auth.scss";
 import Logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { changeForm, logIn, signUp } from "../../redux/Slice/AuthSlice";
 import { useForm } from "react-hook-form";
 import { signupvalidationSchema, loginvalidationSchema } from '../../validation/Userathvalidation'
 import { yupResolver } from '@hookform/resolvers/yup';
+import "./Auth.scss";
 
 
 const Auth = () => {
@@ -28,24 +28,24 @@ const Auth = () => {
     resolver: yupResolver(isSignup ? signupvalidationSchema : loginvalidationSchema),
     mode: 'onBlur',
   });
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (isSignup) {
-  //     dispatch(signUp(data))
-  //   } else {
-  //     dispatch(logIn(data))
-  //   }
-  // }
-
   const resetForm = () => {
     setData({ firstname: "", lastname: "", password: "", confirmpass: "", username: "" })
   }
 
+  // if (isSignup==201) {
+  //   resetForm()
+  //   dispatch(changeForm(isSignup))
+  // }
+  useEffect(()=>{
+    resetForm()
+  },[isSignup])
   const handlesub = (data) => {
     console.log("userDataaaa", data)
-    alert()
-
+    if (isSignup) {
+      dispatch(signUp(data))
+    } else {
+      dispatch(logIn(data))
+    }
   };
 
   return (

@@ -12,8 +12,8 @@ const Posts = () => {
   const { user } = useSelector((state) => state.auth.authData)
   const { posts, loading } = useSelector((state) => state.post)
   console.log("post user", user,loading,user._id)
-  useEffect(() => {
-    dispatch(fetchPosts(user._id))
+  useEffect(() => { 
+    return (()=>dispatch(fetchPosts(user._id)))
   },[])
 
   return (
