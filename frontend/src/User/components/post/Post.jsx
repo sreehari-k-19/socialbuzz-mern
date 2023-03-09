@@ -16,7 +16,6 @@ const Post = ({ data }) => {
     setLiked((prev)=>!prev)
     likePost(data._id,user._id)
     liked?setLikes((prev)=>prev-1):setLikes((prev)=>prev+1)
-
   }
   return (
     <div className="Post">

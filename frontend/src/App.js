@@ -10,8 +10,7 @@ import './App.scss';
 import Emailverify from './User/components/emailVerify/Emailverify';
 
 function App() {
-  const {user} = useSelector((state) => state.auth.authData);
-  console.log("userr.....", user)
+  const user = useSelector((state) => state.auth.authData);
   return (
     <div className="App">
       <div className="blur" style={{ top: '-18%', right: '0' }}> </div>

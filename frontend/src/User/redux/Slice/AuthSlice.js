@@ -40,7 +40,6 @@ export const signUp = createAsyncThunk("auth/signup", async (formData, { rejectW
 export const logIn = createAsyncThunk("auth/login", async (formData, { rejectWithValue }) => {
     try {
         const { data, status } = await axios.post(`${BaseUrl}/auth/login`, formData)
-
         return { data, status };
     } catch (error) {
         console.log(error.response.data)
@@ -61,6 +60,24 @@ export const verifyToken = createAsyncThunk("auth/verfy", async (urlData, { reje
 export const updateUser = createAsyncThunk('updateUser', async (userDetails, { rejectWithValue }) => {
     try {
         const { data } = await axios.put(`/user/${userDetails.id}`, userDetails.formData)
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+
+export const followUser = createAsyncThunk("followuser", async ({_id,user}, { rejectWithValue }) => {
+    try {
+
+        const { data } = await axios.put(`/user/${_id}/follow`,user)
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+export const unFollowUser = createAsyncThunk("unfollowuser", async ({_id,user}, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.put(`/user/${_id}/unfollow`,user)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)
@@ -108,8 +125,6 @@ const authSlice = createSlice({
         builder.addCase(signUp.rejected, (state, action) => {
             alert("r")
             console.log("ac", action)
-            console.log("ac", action.error)
-            alert("r")
             return {
                 ...state, loading: false, error: action.payload,
             }
@@ -120,7 +135,7 @@ const authSlice = createSlice({
             };
         });
         builder.addCase(logIn.fulfilled, (state, action) => {
-            console.log(action, action.payload.data,"login action")
+            console.log(action, action.payload.data, "login action")
             const { data, status } = action.payload
             if (status === 201) {
                 infoToast(data.email)
@@ -156,18 +171,24 @@ const authSlice = createSlice({
                 ...state, verify: false
             }
         })
-        builder.addCase(updateUser.pending,(state,action)=>{
-            return {...state, loading: true , error: false}
+        builder.addCase(updateUser.pending, (state, action) => {
+            return { ...state, loading: true, error: false }
         })
-        builder.addCase(updateUser.fulfilled,(state,action)=>{
-            console.log(action.payload,"update action")
+        builder.addCase(updateUser.fulfilled, (state, action) => {
+            console.log(action.payload, "update action")
             alert("up sus")
-            localStorage.setItem("profile", JSON.stringify({...action?.payload}));
-            return {...state, authData: action.payload, loading: false, error: false}
+            localStorage.setItem("profile", JSON.stringify({ ...action?.payload }));
+            return { ...state, authData: action.payload, loading: false, error: false }
         })
-        builder.addCase(updateUser.rejected,(state,action)=>{
+        builder.addCase(updateUser.rejected, (state, action) => {
             alert("up re")
-            return {...state, loading: true, error: true}
+            return { ...state, loading: true, error: true }
+        })
+        builder.addCase(followUser.fulfilled,(state,action)=>{
+            return {...state, authData: {...state.authData, user: {...state.authData.user, following: [...state.authData.user.following, action.data]} }}
+        })
+        builder.addCase(unFollowUser.fulfilled,(state,action)=>{
+            return {...state, authData: {...state.authData, user: {...state.authData.user, following: [...state.authData.user.following.filter((_id)=>_id!==action.data)]} }}
         })
     }
 

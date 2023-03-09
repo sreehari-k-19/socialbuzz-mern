@@ -61,13 +61,13 @@ export const verifiy = async (req, res) => {
             token: req.params.token,
         })
         if (!token) return res.status(400).send({ message: "Invalid link" });
-        // user.expiresAt = null;
+        user.expiresAt = null;
         console.log("1")
-           const updateUser = await UserModel.findOneAndUpdate(
-                { _id: req.params.id },
-                { $unset: { expiresAt: "" } },
-                { new: true }
-            );
+        //    const updateUser = await UserModel.findOneAndUpdate(
+        //         { _id: req.params.id },
+        //         { $unset: { expiresAt: "" } },
+        //         { new: true }
+        //     );
         // await UserModel.updateOne(
         //     { _id: req.params.id },
         //     { $unset: { expiresAt: 1 } }
