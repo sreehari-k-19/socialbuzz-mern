@@ -90,7 +90,6 @@ const ProfieCard = ({ location }) => {
 export default ProfieCard;
 
 function profilePicture(showModal, setShowModal, theme, image, cover) {
-alert(cover)
   return (
     <Modal overlayColor={
       theme.colorScheme === "dark"

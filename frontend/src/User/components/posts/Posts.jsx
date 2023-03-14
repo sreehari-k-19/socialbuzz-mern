@@ -10,17 +10,18 @@ import './posts.scss';
 
 const Posts = () => {
   const dispatch = useDispatch()
-  const params=useParams()
+  const params = useParams()
   const { user } = useSelector((state) => state.auth.authData)
- let { posts, loading } = useSelector((state) => state.post)
-  useEffect(() => { 
-    return (()=>dispatch(fetchPosts(user._id)))
-  },[])
-if(!posts) return "no Posts";
-if(params.id) posts=posts.filter((post)=>post.user._id===params.id)
+  let { posts, loading } = useSelector((state) => state.post)
+  useEffect(() => {
+    return (() => dispatch(fetchPosts(user._id)))
+  }, [])
+  console.log(posts,"poststs")
+  if (!posts) return "no Posts";
+  if(params.id) posts = posts.filter((post)=> post.userId===params.id)
   return (
     <div className="Posts">
-      {loading ? <CircularLoading/> : posts?.map((post, id) => {
+      {loading ? <CircularLoading /> : posts?.map((post, id) => {
         return <Post data={post} id={id} />;
       })}
     </div>

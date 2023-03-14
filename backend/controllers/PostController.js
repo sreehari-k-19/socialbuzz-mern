@@ -3,6 +3,7 @@ import UserModel from "../models/userModels.js";
 import mongoose from "mongoose";
 import { S3Client, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import AWS from "aws-sdk";
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -12,9 +13,16 @@ const accessKeyId = process.env.AWS_ACCESS_KEY
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY
 
 // createPost
+AWS.config.update({
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_BUCKET_REGION,
+    correctClockSkew: true,
+});
+const s3 = new AWS.S3();
 
 export const createPost = async (req, res) => {
-    console.log("post details",req.body);
+    console.log("post details", req.body);
     const newPost = new PostModel(req.body)
     try {
         await newPost.save()
@@ -60,13 +68,28 @@ export const updatePost = async (req, res) => {
 //delterPost
 
 export const deletePost = async (req, res) => {
+    console.log("delete post ")
     const postId = req.params.id
-    const { userId } = req.body
+    const userId = req.query.userId
     try {
         const post = await PostModel.findById(postId)
+        console.log(post)
         if (post.userId === userId) {
-            await post.deleteOne();
-            res.status(200).json("post deleted")
+            const params = {
+                Bucket: bucketName,
+                Key: post.image
+            }
+            s3.deleteObject(params, async function (err, data) {
+                if (err) {
+                    console.log("error",err, err.stack);
+                }
+                else{
+                    console.log("delete suss",data);
+                    await post.deleteOne();
+                    res.status(200).json("post deleted")
+                }     
+            });
+       
         } else {
             res.status(403).json("Action forbidden")
         }
@@ -131,18 +154,19 @@ export const getTimelinePosts = async (req, res) => {
                 }
             }
         ])
-        const posts=currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
+        console.log(followingPosts, "foll postss")
+        const posts = currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
             return b.createdAt - a.createdAt;
         })
-        for(const post of posts){
+        for (const post of posts) {
             const params = {
                 Bucket: bucketName,
                 Key: post.image
             }
             const command = new GetObjectCommand(params);
             const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
-            console.log(url,"image urlll")
-            post.image=url
+            console.log(url, "image urlll")
+            post.image = url
         }
         console.log(posts)
         res.status(200).json(posts)

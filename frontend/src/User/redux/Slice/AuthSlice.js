@@ -68,7 +68,6 @@ export const updateUser = createAsyncThunk('updateUser', async (userDetails, { r
 
 export const followUser = createAsyncThunk("followuser", async ({_id,user}, { rejectWithValue }) => {
     try {
-
         const { data } = await axios.put(`/user/${_id}/follow`,user)
         return data;
     } catch (error) {

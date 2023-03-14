@@ -31,7 +31,7 @@ export const registerUser = async (req, res) => {
         }
         const url = `${process.env.VERI_URL}/auth/${user.id}/verify/${token.token}`;
         console.log(url)
-        return res.status(500);
+        // return res.status(500);
         let sentMail = await mailSender(username, url).then((response) => {
             return res.status(201).json({
                 msg: "you should receive an email"
