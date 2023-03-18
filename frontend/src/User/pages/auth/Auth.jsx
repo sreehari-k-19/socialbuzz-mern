@@ -1,12 +1,16 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import Logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
-import { changeForm, logIn, signUp } from "../../redux/Slice/AuthSlice";
+import { changeForm, logIn, signUp, googleRegister } from "../../redux/Slice/AuthSlice";
 import { useForm } from "react-hook-form";
+import { useGoogleLogin } from '@react-oauth/google';
 import { signupvalidationSchema, loginvalidationSchema } from '../../validation/Userathvalidation'
 import { yupResolver } from '@hookform/resolvers/yup';
+
+
 import "./Auth.scss";
+import axios from "axios";
 
 
 const Auth = () => {
@@ -36,9 +40,9 @@ const Auth = () => {
   //   resetForm()
   //   dispatch(changeForm(isSignup))
   // }
-  useEffect(()=>{
+  useEffect(() => {
     resetForm()
-  },[isSignup])
+  }, [isSignup])
   const handlesub = (data) => {
     console.log("userDataaaa", data)
     if (isSignup) {
@@ -47,7 +51,19 @@ const Auth = () => {
       dispatch(logIn(data))
     }
   };
-
+  const googelScu = (credentialResponse) => {
+    console.log("crdiiiiii", credentialResponse)
+  }
+  const googleFail = (credentialResponse) => {
+    console.log("crdiiiiii", credentialResponse)
+  }
+  const googelLogin = useGoogleLogin({
+    onSuccess: codeResponse => {
+      console.log(codeResponse)
+      const {access_token}=codeResponse;
+      dispatch(googleRegister(codeResponse))
+    }
+  });
   return (
     <div className="Auth">
       <div className="a-left">
@@ -128,6 +144,7 @@ const Auth = () => {
                 value={data.password}
               />
               <p>{errors.password?.message}</p>
+              <div className="forgetpass"><Link to="/forgotpassword">forgotpassword ?</Link></div>
             </div>
             <div>
               {isSignup && (
@@ -164,7 +181,9 @@ const Auth = () => {
             {loading ? "loading..." : isSignup ? "Signup" : "Sign in"}
           </button>
         </form>
+        <button className="googlebutton" onClick={googelLogin}><span><img src="" alt=""/><span>Google Login</span></span></button>
       </div>
+
     </div>
   );
 };

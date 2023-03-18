@@ -5,6 +5,7 @@ import { S3Client, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import AWS from "aws-sdk";
 import dotenv from 'dotenv'
+import ReportReasonModel from "../models/reportReasonModels.js";
 dotenv.config()
 
 const bucketName = process.env.AWS_BUCKET_NAME
@@ -49,13 +50,14 @@ export const getPost = async (req, res) => {
 //updatePost
 
 export const updatePost = async (req, res) => {
+    console.log("updatepost", req.body)
     const postId = req.params.id
-    const { userId } = req.body
+    const { userId, desc } = req.body
     try {
         const post = await PostModel.findById(postId)
         if (post.userId === userId) {
-            await post.updateOne({ $set: req.body })
-            res.status(200).json("post updated")
+            await post.updateOne({ $set: { desc: desc } })
+            res.status(200).json(post)
         } else {
             res.status(403).json("Action forbidden")
         }
@@ -81,15 +83,15 @@ export const deletePost = async (req, res) => {
             }
             s3.deleteObject(params, async function (err, data) {
                 if (err) {
-                    console.log("error",err, err.stack);
+                    console.log("error", err, err.stack);
                 }
-                else{
-                    console.log("delete suss",data);
+                else {
+                    console.log("delete suss", data);
                     await post.deleteOne();
                     res.status(200).json("post deleted")
-                }     
+                }
             });
-       
+
         } else {
             res.status(403).json("Action forbidden")
         }
@@ -174,3 +176,6 @@ export const getTimelinePosts = async (req, res) => {
         res.status(500).json(error)
     }
 }
+
+// get reports
+

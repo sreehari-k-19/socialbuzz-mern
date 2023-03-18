@@ -3,8 +3,21 @@ import axios from "axios";
 import { BaseUrl } from "../Url";
 import { toast } from 'react-toastify';
 
+
 const infoToast = (email) => {
     toast.info(`Check you email ${email} to verify your account`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    });
+}
+const msgToast=(msg,mail)=>{
+    toast.info(`${msg}${mail}`, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -21,7 +34,8 @@ const initialState = {
     loading: false,
     error: false,
     isSignup: false,
-    verify: false
+    verify: false,
+    resetSucess:false,
 };
 
 export const signUp = createAsyncThunk("auth/signup", async (formData, { rejectWithValue }) => {
@@ -66,22 +80,47 @@ export const updateUser = createAsyncThunk('updateUser', async (userDetails, { r
     }
 })
 
-export const followUser = createAsyncThunk("followuser", async ({_id,user}, { rejectWithValue }) => {
+export const followUser = createAsyncThunk("followuser", async ({ _id, user }, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`/user/${_id}/follow`,user)
+        const { data } = await axios.put(`/user/${_id}/follow`, user)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)
     }
 })
-export const unFollowUser = createAsyncThunk("unfollowuser", async ({_id,user}, { rejectWithValue }) => {
+export const unFollowUser = createAsyncThunk("unfollowuser", async ({ _id, user }, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`/user/${_id}/unfollow`,user)
+        const { data } = await axios.put(`/user/${_id}/unfollow`, user)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)
     }
 })
+export const forgotPassword = createAsyncThunk('forgotpassword', async (username, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.post(`${BaseUrl}/auth/forgotpassword`, username)
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+export const resetPassword = createAsyncThunk('resetpassword',async({resetData,navigate},{rejectWithValue})=>{
+    try {
+        const {data}=await axios.post(`${BaseUrl}/auth/resetpassword`,resetData)
+        return data; 
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+export const googleRegister = createAsyncThunk('googleregister',async(token,{rejectWithValue})=>{
+    try {
+        const {data}=await axios.post(`${BaseUrl}/auth/google`,token)
+        return data; 
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+
 
 const authSlice = createSlice({
     name: "auth",
@@ -175,19 +214,30 @@ const authSlice = createSlice({
         })
         builder.addCase(updateUser.fulfilled, (state, action) => {
             console.log(action.payload, "update action")
-            alert("up sus")
             localStorage.setItem("profile", JSON.stringify({ ...action?.payload }));
             return { ...state, authData: action.payload, loading: false, error: false }
         })
         builder.addCase(updateUser.rejected, (state, action) => {
-            alert("up re")
             return { ...state, loading: true, error: true }
         })
-        builder.addCase(followUser.fulfilled,(state,action)=>{
-            return {...state, authData: {...state.authData, user: {...state.authData.user, following: [...state.authData.user.following, action.data]} }}
+        builder.addCase(followUser.fulfilled, (state, action) => {
+            return { ...state, authData: { ...state.authData, user: { ...state.authData.user, following: [...state.authData.user.following, action.data] } } }
         })
-        builder.addCase(unFollowUser.fulfilled,(state,action)=>{
-            return {...state, authData: {...state.authData, user: {...state.authData.user, following: [...state.authData.user.following.filter((_id)=>_id!==action.data)]} }}
+        builder.addCase(unFollowUser.fulfilled, (state, action) => {
+            return { ...state, authData: { ...state.authData, user: { ...state.authData.user, following: [...state.authData.user.following.filter((_id) => _id !== action.data)] } } }
+        })
+        builder.addCase(forgotPassword.fulfilled, (state, action) => {
+            msgToast(action.payload.msg,action.meta.arg.username)
+            return { ...state }
+        })
+        builder.addCase(resetPassword.fulfilled,(state,action)=>{
+            action.meta.arg.navigate('/auth')
+            msgToast(action.payload.msg,"")
+            return{...state}
+        })
+        builder.addCase(resetPassword.rejected,(state,action)=>{
+            msgToast(action.payload.msg,"")
+            return{...state}
         })
     }
 

@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 import Mailgen from "mailgen";
 
-export const mailSender = (userEmail,subject) => {
+export const mailSender = (userEmail, subject, username, reset) => {
     return new Promise((resolve, reject) => {
         // const { userEmail } = req.body;
         const EMAIL = process.env.MAIL_ID
@@ -27,9 +27,9 @@ export const mailSender = (userEmail,subject) => {
             }
         })
 
-        let emailResponse = {
+        let emailResponseVerify = {
             body: {
-                name: 'John Appleseed',
+                name: username,
                 intro: 'Welcome to Socialbuzz! We\'re very excited to have you on board.',
                 action: {
                     instructions: 'To get started with Socialbuzz, please click here:',
@@ -41,18 +41,33 @@ export const mailSender = (userEmail,subject) => {
                 },
                 outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
             }
+        }
+
+        let emailResponseResetpassword = {
+            body: {
+                name: username,
+                intro: 'Welcome to Socialbuzz! We\'re very excited to have you on board.',
+                action: {
+                    instructions: 'To reset your password, please click here:',
+                    button: {
+                        color: '#22BC66', // Optional action button color
+                        text: 'Confirm your account',
+                        link: subject
+                    }
+                },
+                outro: 'Need help, or have questions? Just reply to this email, we\'d love to help.'
+            }
         };
-
-        let mail = MailGenerator.generate(emailResponse)
-
+        
+        let mail = reset ? MailGenerator.generate(emailResponseResetpassword) : MailGenerator.generate(emailResponseVerify)
         let message = {
             from: EMAIL,
             to: userEmail,
-            subject: "Account verifi",
+            subject: reset?"Reset passoword":"Account verifi",
             html: mail
         }
 
-    
+
         transporter.sendMail(message).then(() => {
             resolve()
         }).catch(error => {

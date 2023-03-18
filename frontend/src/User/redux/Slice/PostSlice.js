@@ -3,6 +3,21 @@ import axios from "axios";
 import { BaseUrl } from "../Url";
 import { toast } from 'react-toastify';
 
+
+const msgToast=(msg)=>{
+    toast.info(`${msg}`, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    });
+}
+
+
 const initialState = { posts: null, loading: false, error: false, uploading: false };
 
 
@@ -32,13 +47,30 @@ export const likePost = createAsyncThunk("post/get", async (id, { rejectWithValu
 })
 export const deletePost = createAsyncThunk("post/delete", async ({ id, userId }, { rejectWithValue }) => {
     try {
-        const response = await  axios.delete(`${BaseUrl}/post/${id}?userId=${userId}`)
+        const response = await axios.delete(`${BaseUrl}/post/${id}?userId=${userId}`)
         return response.data
     } catch (error) {
         return rejectWithValue(error.response.data)
     }
 })
+export const editPost = createAsyncThunk('post/edit', async ({ id, postData }, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.put(`${BaseUrl}/post/${id}`, postData)
+        return data;
+    } catch (error) {
+        return rejectWithValue(error.response.data)
 
+    }
+})
+
+export const reportPost = createAsyncThunk('post/report',async({id,report},{rejectWithValue})=>{
+    try {
+        const {data} = await axios.post(`${BaseUrl}/report/${id}`,report)
+        return data
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
 let toastid;
 const uploadPostSlice = createSlice({
     name: "post",
@@ -66,18 +98,18 @@ const uploadPostSlice = createSlice({
         builder.addCase(fetchPosts.rejected, (state, action) => {
             return { ...state, loading: false, error: true };
         });
-        builder.addCase(deletePost.fulfilled,(state,action)=>{
-            console.log("post delte ",action)
-            console.log(action.meta.arg)
+        builder.addCase(deletePost.fulfilled, (state, action) => {
             const postId = action.meta.arg.id;
-            
             const updatedPosts = state.posts.filter(post => post._id !== postId);
-            return { ...state,posts:updatedPosts, uploading: false, error: false };
+            return { ...state, posts: updatedPosts, uploading: false, error: false };
         })
-        // builder.addCase(deletePost.fulfilled,(state,action)=>{
-        //     console.log("post delte ",action.data)
-        //     return { ...state, posts: [...state.posts,...state.posts.filter((post)=>post?._id!==action.payload.id)], uploading: false, error: false };
-        // })
+       builder.addCase(editPost.fulfilled,(state,action)=>{
+        return{...state,}
+       })
+       builder.addCase(reportPost.fulfilled,(state,action)=>{
+        msgToast(action.payload.msg)
+        return{...state}
+       })
     },
 
 })

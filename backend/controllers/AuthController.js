@@ -3,6 +3,7 @@ import verificationModel from "../models/verficationModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { OAuth2Client } from 'google-auth-library';
 import { mailSender } from "../helpers/mailSender.js";
 
 export const registerUser = async (req, res) => {
@@ -32,7 +33,7 @@ export const registerUser = async (req, res) => {
         const url = `${process.env.VERI_URL}/auth/${user.id}/verify/${token.token}`;
         console.log(url)
         // return res.status(500);
-        let sentMail = await mailSender(username, url).then((response) => {
+        let sentMail = await mailSender(username, url, user.firstname, false).then((response) => {
             return res.status(201).json({
                 msg: "you should receive an email"
             })
@@ -131,5 +132,72 @@ export const loginUser = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message })
 
+    }
+}
+
+export const forgotPassword = async (req, res) => {
+    console.log("forgotpassword", req.body)
+    const { username } = req.body;
+    try {
+        const user = await UserModel.findOne({ username: username })
+        if (!user) return res.status(201).json({ msg: "User not found in this email" })
+        if (user.expiresAt) return res.status(201).json({ msg: "User not found in this email" })
+        let token = await verificationModel.findOne({ userId: user._id });
+        if (!token) {
+            token = await new verificationModel({
+                userId: user._id,
+                token: uuidv4().toString("hex"),
+            }).save();
+        }
+        const url = `${process.env.VERI_URL}/resetpassword/${user.id}/${token.token}`;
+        console.log(url)
+        return res.status(201).json({ msg: "you should receive an email at" })
+
+        let sentMail = await mailSender(username, url, user.firstname, true).then((response) => {
+            return res.status(201).json({
+                msg: "you should receive an email at"
+            })
+        }).catch((error) => {
+            return res.status(500).json({ error })
+        })
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const resetPassword = async (req, res) => {
+    console.log("resetpassword", req.body)
+    const { id, token, confirmPassword } = req.body
+    try {
+        const user = await UserModel.findOne({ _id: id })
+        if (!user) return res.status(400).json({ msg: "invalid user" })
+        const token = await verificationModel.findOne({ userId: user._id, token: req.body.token })
+        if (!token) return res.status(400).json({ msg: "Invalid submitions" })
+        const salt = await bcrypt.genSalt(10)
+        const hashedpass = await bcrypt.hash(confirmPassword, salt)
+        await UserModel.updateOne({ _id: id }, { $set: { password: hashedpass } })
+        await token.remove()
+        return res.status(200).json({ msg: "password changed successfully, Login again to continue!" })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const googleRegister = async (req, res) => {
+    const { access_token } = req.body
+    console.log("googeleee", req.body,process.env.CLIENT_ID,access_token)
+
+    try {
+        const clientId=process.env.CLIENT_ID
+        const client = new OAuth2Client(clientId)
+        const ticket = await client.verifyIdToken({
+            idToken: access_token,
+            audience: clientId,
+        })
+        const data = ticket.getPayload()
+        console.log("data",data)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
     }
 }

@@ -63,3 +63,24 @@
   align-items: center;
   justify-content: center;
 }
+
+.forgetpass{
+  margin-top: 7px;
+  font-size: 14px;
+  color: $orange;
+  text-align: right;
+}
+.a-right{
+  display:flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+}
+.googlebutton{
+  height: 30px;
+  color:$orange;
+  border-radius: 4px;
+  border: 1px solid $yellow ;
+  width: 190px;
+  
+}

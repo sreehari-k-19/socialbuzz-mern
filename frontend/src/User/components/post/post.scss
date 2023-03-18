@@ -26,6 +26,23 @@
       }
     }
   }
+  .detail {
+    textarea {
+      width: 90%;
+      border: none;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+      scrollbar-width: none;
+      min-height:50px;
+      font-size: 1rem;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
 }
 
 .Post > img {
@@ -62,7 +79,8 @@
   div:nth-of-type(2) {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 15px;
     padding: 10px;
     align-items: center;
     div {
