@@ -3,6 +3,12 @@ import axios from "axios";
 import { BaseUrl } from "../Url";
 import { toast } from 'react-toastify';
 
+const config = {};
+if (localStorage.getItem('profile')) {
+    config.headers = {
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`
+    }
+}
 
 const infoToast = (email) => {
     toast.info(`Check you email ${email} to verify your account`, {
@@ -73,7 +79,7 @@ export const verifyToken = createAsyncThunk("auth/verfy", async (urlData, { reje
 
 export const updateUser = createAsyncThunk('updateUser', async (userDetails, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`/user/${userDetails.id}`, userDetails.formData)
+        const { data } = await axios.put(`${BaseUrl}/user/${userDetails.id}`, userDetails.formData)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)
@@ -82,7 +88,7 @@ export const updateUser = createAsyncThunk('updateUser', async (userDetails, { r
 
 export const followUser = createAsyncThunk("followuser", async ({ _id, user }, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`/user/${_id}/follow`, user)
+        const { data } = await axios.put(`${BaseUrl}/user/${_id}/follow`, user,config)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)
@@ -90,7 +96,7 @@ export const followUser = createAsyncThunk("followuser", async ({ _id, user }, {
 })
 export const unFollowUser = createAsyncThunk("unfollowuser", async ({ _id, user }, { rejectWithValue }) => {
     try {
-        const { data } = await axios.put(`/user/${_id}/unfollow`, user)
+        const { data } = await axios.put(`${BaseUrl}/user/${_id}/unfollow`, user, config)
         return data;
     } catch (error) {
         return rejectWithValue(error.response.data)

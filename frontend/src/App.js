@@ -2,6 +2,7 @@ import React from 'react';
 import Auth from './User/pages/auth/Auth';
 import Home from './User/pages/home/Home';
 import Profile from './User/pages/profile/Profile'
+import Chat from './User/pages/chat/Chat'
 import ResetPassword from './User/components/resetpassword/ResetPassword';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import AdminRouter from './Admin/AdminRouter';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/profile/:id" element={user ? <Profile /> : <Navigate to="../auth" />} />
         <Route path='/resetpassword/:id/:token' element={<ResetPassword/>}/>
         <Route path="/forgotpassword" element={<Forgotpassword/>}/>
+        <Route  path="/chat" element={user ? <Chat/> : <Navigate to="../auth" />} />
       </Routes>
       <ToastContainer />
     </div>

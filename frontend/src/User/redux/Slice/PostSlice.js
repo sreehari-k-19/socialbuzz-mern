@@ -18,7 +18,7 @@ const msgToast=(msg)=>{
 }
 
 
-const initialState = { posts: null, loading: false, error: false, uploading: false };
+const initialState = { posts:[], loading: false, error: false, uploading: false };
 
 
 export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectWithValue }) => {
@@ -29,9 +29,9 @@ export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectW
         return rejectWithValue(error.response.data)
     }
 })
-export const fetchPosts = createAsyncThunk("post/get", async (id, { rejectWithValue }) => {
+export const fetchPosts = createAsyncThunk("post/get", async ({id,page}, { rejectWithValue }) => {
     try {
-        const response = await axios.get(`${BaseUrl}/post/${id}/timeline`)
+        const response = await axios.get(`${BaseUrl}/post/${id}/timeline?page=${page}`)
         return response.data
     } catch (error) {
         return rejectWithValue(error.response.data)
@@ -93,7 +93,10 @@ const uploadPostSlice = createSlice({
             return { ...state, loading: true, error: false };
         });
         builder.addCase(fetchPosts.fulfilled, (state, action) => {
-            return { ...state, posts: action.payload, loading: false, error: false };
+            // console.log("post timelineeeee",action)
+            //  state.posts=[...state.posts,...action.payload]
+            console.log("ppp",state.posts)
+            return { ...state ,posts:[action.payload,...state.posts ], loading: false, error: false };
         });
         builder.addCase(fetchPosts.rejected, (state, action) => {
             return { ...state, loading: false, error: true };
@@ -104,6 +107,12 @@ const uploadPostSlice = createSlice({
             return { ...state, posts: updatedPosts, uploading: false, error: false };
         })
        builder.addCase(editPost.fulfilled,(state,action)=>{
+        console.log('edit postsss',action.payload)
+        const postId = action.meta.arg.id;
+        const index = state.posts.filter(post=>post._id===postId)
+        if(index!==-1){
+            state.posts[index]=action.payload
+        }
         return{...state,}
        })
        builder.addCase(reportPost.fulfilled,(state,action)=>{

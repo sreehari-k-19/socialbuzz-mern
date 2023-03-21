@@ -151,7 +151,7 @@ export const forgotPassword = async (req, res) => {
         }
         const url = `${process.env.VERI_URL}/resetpassword/${user.id}/${token.token}`;
         console.log(url)
-        return res.status(201).json({ msg: "you should receive an email at" })
+        // return res.status(201).json({ msg: "you should receive an email at" })
 
         let sentMail = await mailSender(username, url, user.firstname, true).then((response) => {
             return res.status(201).json({

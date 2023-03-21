@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { PostsData } from "../../Data/PostsData";
 import { fetchPosts } from "../../redux/Slice/PostSlice";
 import CircularLoading from "../circularLoading/CircularLoading";
@@ -11,20 +12,40 @@ import './posts.scss';
 const Posts = () => {
   const dispatch = useDispatch()
   const params = useParams()
+  let [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const { user } = useSelector((state) => state.auth.authData)
   let { posts, loading } = useSelector((state) => state.post)
+  
+  // if (posts) setData(posts);
+
   useEffect(() => {
-    return (() => dispatch(fetchPosts(user._id)))
+    return (() => dispatch(fetchPosts({ id: user._id, page })))
   }, [])
-  console.log(posts,"poststs")
-  if (!posts) return "no Posts";
-  if(params.id) posts = posts.filter((post)=> post.userId===params.id)
+
+  const fetchNextPage = () => {
+    setPage(page + 1)
+    dispatch(fetchPosts({ id: user._id, page })).then((response) => {
+      if (response.payload.length === 0) {
+        setHasMore(false);
+      }
+      setData([...data, ...response.payload])
+    })
+
+  }
+
+  if (!data) return "no Posts";
+  if (params.id) data = data.filter((post) => post.userId === params.id)
   return (
-    <div className="Posts">
-      {loading ? <CircularLoading /> : posts?.map((post, id) => {
-        return <Post data={post} id={id} />;
-      })}
-    </div>
+    <InfiniteScroll dataLength={data.length} next={fetchNextPage} hasMore={hasMore} loader={<CircularLoading />}>
+      <div className="Posts">
+        { data?.map((post, id) => {
+          return <Post data={post} id={id} />;
+        })}
+      </div>
+    </InfiniteScroll>
   );
 };
 

@@ -5,7 +5,7 @@ import Comment from "../../../img/comment.png";
 import Share from "../../../img/share.png";
 import Heart from "../../../img/Like.png";
 import NotLike from "../../../img/notlike.png";
-
+import { IoMdCloseCircleOutline } from "react-icons/io";
 import "./post.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { likePost } from "../../api/requests";
@@ -45,7 +45,6 @@ const Post = ({ data }) => {
     })
   }
 
-  console.log("modeell", modalOpened)
   useEffect(() => {
 
     if (postEdit) {
@@ -55,12 +54,12 @@ const Post = ({ data }) => {
   }, [postEdit]);
 
   const handleChangepost = () => {
-    console.log("<<<>>>>>>", desc)
     let postData = {
       userId: user._id,
       desc: desc
     }
     dispatch(editPost({ id: data._id, postData }))
+    setPostEdit(false)
   }
 
   return (
@@ -69,29 +68,6 @@ const Post = ({ data }) => {
         <div>Hari k</div>
 
         <div className="dot" onClick={() => setDropactive(!dropActive)}>
-          {/* {dropActive ? (
-            <div className="dropdown">
-              <div className="dropclose" onClick={dropDown}>
-                <UilTimes />
-              </div>
-              {user._id === data.userId ? (
-                <>
-                  <div onClick={() => handleDelete(data._id)}>Delete</div>
-                  <div onClick={() => setPostEdit(true)}>Edit</div>
-                </>
-              ) : (
-                <div onClick={() => setModalOpened(true)}>Report</div>
-                <PostReport modalOpened={modalOpened} setModalOpened={setModalOpened} id={data._id} />
-              )}
-              <PostReport modalOpened={modalOpened} setModalOpened={setModalOpened} id={data._id} />
-            </div>
-          ) : (
-            <>
-              <span></span>
-              <span></span>
-              <span></span>
-            </>
-          )} */}
           {dropActive ? (
             user._id === data.userId ? (<div className="dropdown">
               <div className="dropclose" onClick={() => setDropactive(!dropActive)}>
@@ -105,7 +81,7 @@ const Post = ({ data }) => {
                   <UilTimes />
                 </div>
                 <div style={{ height: '200px' }} onClick={() => {
-                  console.log("modeell", modalOpened)
+                  
                   setModalOpened((modalOpened) => !modalOpened)
                   // setDropactive(!dropActive)
                 }}>Report</div>
@@ -118,8 +94,8 @@ const Post = ({ data }) => {
               <span></span>
             </>
           )}
-          <PostReport modalOpened={modalOpened} setModalOpened={setModalOpened} id={data._id} />
 
+          {modalOpened ? <PostReport modalOpened={modalOpened} setModalOpened={setModalOpened} id={data._id} /> : null}
         </div>
 
 
@@ -136,7 +112,7 @@ const Post = ({ data }) => {
           <b>{data.name}</b>
         </span>
         {postEdit ? <span> <textarea name="desc" ref={textareaRef} defaultValue={desc} onChange={(e) => setDesc(e.target.value)} />
-          <button onClick={handleChangepost}>save changes</button> </span> : <span>{data.desc}</span>}
+          <button onClick={handleChangepost}>save changes</button> <IoMdCloseCircleOutline  style={{ color: 'rgb(240, 44, 18)', fontSize: '24px' }} onClick={()=>setPostEdit(false)}/> </span> : <span>{data.desc}</span>}
       </div>
     </div>
   );

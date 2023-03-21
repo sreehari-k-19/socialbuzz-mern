@@ -57,6 +57,7 @@ export const updatePost = async (req, res) => {
         const post = await PostModel.findById(postId)
         if (post.userId === userId) {
             await post.updateOne({ $set: { desc: desc } })
+            console.log(post)
             res.status(200).json(post)
         } else {
             res.status(403).json("Action forbidden")
@@ -125,7 +126,7 @@ export const likePost = async (req, res) => {
 // getAllposts
 
 export const getTimelinePosts = async (req, res) => {
-    console.log("gettimelineposts")
+    console.log("gettimelineposts", req.query)
     const userId = req.params.id;
     const s3Client = new S3Client({
         correctClockSkew: true,
@@ -142,7 +143,7 @@ export const getTimelinePosts = async (req, res) => {
                 $match: {
                     _id: new mongoose.Types.ObjectId(userId)
                 }
-            }, {
+            },{
                 $lookup: {
                     from: "posts",
                     localField: "following",
@@ -155,11 +156,23 @@ export const getTimelinePosts = async (req, res) => {
                     _id: 0
                 }
             }
+
         ])
         console.log(followingPosts, "foll postss")
-        const posts = currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
+        const allPosts = currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
             return b.createdAt - a.createdAt;
         })
+        
+
+        const { page } = req.query;
+        const limit=3;
+        const pageNumber = parseInt(page) || 1;
+        const limitNumber = parseInt(limit);
+        const startIndex = (pageNumber - 1) * limitNumber;
+        const endIndex = pageNumber*limitNumber;
+
+        const posts = allPosts.slice(startIndex,endIndex)
+
         for (const post of posts) {
             const params = {
                 Bucket: bucketName,
@@ -170,7 +183,7 @@ export const getTimelinePosts = async (req, res) => {
             console.log(url, "image urlll")
             post.image = url
         }
-        console.log(posts)
+
         res.status(200).json(posts)
     } catch (error) {
         res.status(500).json(error)

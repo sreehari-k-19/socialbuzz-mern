@@ -7,10 +7,8 @@ import { useForm } from "react-hook-form";
 import { useGoogleLogin } from '@react-oauth/google';
 import { signupvalidationSchema, loginvalidationSchema } from '../../validation/Userathvalidation'
 import { yupResolver } from '@hookform/resolvers/yup';
-
-
 import "./Auth.scss";
-import axios from "axios";
+
 
 
 const Auth = () => {
@@ -181,7 +179,7 @@ const Auth = () => {
             {loading ? "loading..." : isSignup ? "Signup" : "Sign in"}
           </button>
         </form>
-        <button className="googlebutton" onClick={googelLogin}><span><img src="" alt=""/><span>Google Login</span></span></button>
+        {/* <button className="googlebutton" onClick={googelLogin}><span><img src="" alt=""/><span>Google Login</span></span></button> */}
       </div>
 
     </div>
