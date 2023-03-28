@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import defaultCover from "../../../img/defaultCover.jpg";
@@ -6,15 +6,14 @@ import Profile from "../../../img/defaultProfile.png";
 import { Modal, useMantineTheme } from "@mantine/core";
 import "./profileCard.scss";
 
-const ProfieCard = ({ location }) => {
-  const { user } = useSelector((state) => state.auth.authData)
-  console.log(user, "prrr userrr")
+const ProfieCard = ({ location ,profileData}) => {
   const theme = useMantineTheme();
   const { posts } = useSelector((state) => state.post)
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null);
   const [cover, setCover] = useState(false)
-  
+
+
   const handleCoverchange = (e) => {
     setCover(true)
     handleChange(e);
@@ -31,32 +30,32 @@ const ProfieCard = ({ location }) => {
     }
   }
   return (
-    <div className="ProfileCard">
+    <div className={`ProfileCard ${location === "profilePage" ? 'primary-classname' : 'homeProfileCard'}`} >
       <div className="ProfileImages">
         <label htmlFor="coverPic" style={{ width: "100%" }}>
-          <img src={user.coverPicture ? user.coverPicture : defaultCover} alt="" title="Click to change cover" id='coverPicture' className="coverPicture" />
+          <img src={profileData?.coverPicture ? profileData?.coverPicture : defaultCover} alt="" title="Click to change cover" id='coverPicture' className="coverPicture" />
         </label>
         <input type="file" id="coverPic" onChange={handleCoverchange} />
         <label htmlFor="profilePic" style={{ position: 'absolute', bottom: '-3rem' }}>
-          <img src={user.profilePicture ? user.coverPicture : Profile} alt="" id="profilePicture" className="profilePicture" />
+          <img src={profileData?.profilePicture ? profileData?.coverPicture : Profile} alt="" id="profilePicture" className="profilePicture" />
         </label>
         <input type="file" id="profilePic" onChange={handleProfileChange} />
         {showModal ? profilePicture(showModal, setShowModal, theme, image, cover) : ""}
       </div>
       <div className="ProfileName">
-        <span>{user.firstname} {user.lastname}</span>
-        <span>{user.worksAt || null}</span>
+        <span>{profileData?.firstname} {profileData.lastname}</span>
+        <span>{profileData?.worksAt || null}</span>
       </div>
       <div className="followStatus">
         <hr />
         <div>
           <div className="follow">
-            <span>{user.following.length}</span>
-            <span>Followings</span>
+            <span>{profileData?.following?.length||0}</span>
+            <span>following</span>
           </div>
           <div className="vl"></div>
           <div className="follow">
-            <span>{user.followers.length}</span>
+            <span>{profileData?.followers?.length || 0}</span>
             <span>Followers</span>
           </div>
           {location === "profilePage" && (
@@ -65,7 +64,7 @@ const ProfieCard = ({ location }) => {
 
               </div>
               <div className="follow">
-                <span>{posts.filter((post) => post.userId === user._id).length}</span>
+                <span>{posts.filter((post) => post.userId === profileData._id).length}</span>
                 <span>Posts</span>
               </div>
             </>
@@ -78,7 +77,7 @@ const ProfieCard = ({ location }) => {
         ""
       ) : (
         <span>
-          <Link to={`/profile/${user._id}`} style={{ textDecoration: "none", color: "inherit" }}>
+          <Link to={`/profile/${profileData._id}`} style={{ textDecoration: "none", color: "inherit" }}>
             My Profile
           </Link>
         </span>

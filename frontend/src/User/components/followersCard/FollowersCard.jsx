@@ -22,7 +22,7 @@ const FollowersCard = () => {
     // setPersons(data)
     }, [])
     return (
-        <div className="FollowersCard">
+        <div className="FollowersCard" style={{ position: "fixed",top:"90px"}}>
             <h3>People you may know</h3>
             {persons.map((person, id) => {
                   if (person._id !== user._id) return <User person={person} key={id} />;

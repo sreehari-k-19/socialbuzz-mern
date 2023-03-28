@@ -7,6 +7,7 @@ import Comment from "../../../img/comment.png";
 import ShareModal from "../sharemodal/ShareModal";
 import TrendCard from "../trendCard/TrendCard";
 import './rightside.scss';
+import FollowersCard from "../followersCard/FollowersCard";
 
 const RightSide = () => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -14,21 +15,20 @@ const RightSide = () => {
     <div className="RightSide">
       <div className="navIcons">
         <Link to="../home">
-          <img src={Home} alt="" />
+          <img  style={{ position: "fixed"}}src={Home} alt="" />
         </Link>
-        <UilSetting />
-        <img src={Noti} alt="" />
+        {/* <img style={{ position: "fixed"}} src={Noti} alt="" /> */}
         <Link to="../chat">
-          <img src={Comment} alt="" />
+          <img  style={{ position: "fixed",marginLeft:"90px"}}src={Comment} alt="" />
         </Link>
       </div>
-
-      <TrendCard />
+      <FollowersCard />
+      {/* <TrendCard />
 
       <button className="button r-button" onClick={() => setModalOpened(true)}>
         Share
       </button>
-      <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} />
+      <ShareModal modalOpened={modalOpened} setModalOpened={setModalOpened} /> */}
     </div>
   );
 };

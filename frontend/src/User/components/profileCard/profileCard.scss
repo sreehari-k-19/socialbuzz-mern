@@ -9,7 +9,11 @@
   overflow-x: clip;
   background: $cardColor;
 }
-
+.homeProfileCard{
+  position: fixed;
+  top:70px;
+  width: 300px;
+}
 .ProfileImages {
   position: relative;
   display: flex;

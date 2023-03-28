@@ -16,6 +16,10 @@ const reportSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: 'reportreasons'
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
     }
   }],
   createdAt: {
@@ -27,3 +31,5 @@ const reportSchema = new mongoose.Schema({
 const ReportModel = mongoose.model('Report', reportSchema);
 
 export default ReportModel;
+
+

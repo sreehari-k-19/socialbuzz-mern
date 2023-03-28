@@ -54,14 +54,15 @@ export const updatePost = async (req, res) => {
     const postId = req.params.id
     const { userId, desc } = req.body
     try {
-        const post = await PostModel.findById(postId)
-        if (post.userId === userId) {
-            await post.updateOne({ $set: { desc: desc } })
-            console.log(post)
-            res.status(200).json(post)
-        } else {
-            res.status(403).json("Action forbidden")
-        }
+        const updatedPost = await PostModel.findOneAndUpdate(
+            { _id: postId, userId: userId },
+            { $set: { desc: desc } },
+            { new: true }
+        );
+        console.log(updatedPost)
+        if (updatedPost) return res.status(200).json(updatedPost)
+        return res.status(403).json("Action forbidden")
+
     } catch (error) {
         res.status(500).json(error)
 
@@ -123,6 +124,81 @@ export const likePost = async (req, res) => {
 };
 
 
+// add comment
+
+export const addComment = async (req, res) => {
+    const { userId, comment } = req.body;
+    const postId = req.params.id;
+    try {
+        let post = await PostModel.findById({ _id: postId });
+        const user = await UserModel.findById({ _id: userId });
+        if (user) {
+            post = await PostModel.findByIdAndUpdate({ _id: postId }, {
+                $push: {
+                    comments: {
+                        userId: userId,
+                        comment: comment
+                    }
+                }
+            }, { new: true })
+            const com = post.comments[post.comments.length - 1]
+            const { username, lastname, firstname,profilePicture } = user;
+            const newComment = {
+                username, lastname,profilePicture, firstname,comments:com
+            }
+            console.log(newComment)
+            return res.status(200).json(newComment)
+        }
+    } catch (error) {
+
+    }
+
+}
+
+// getComment
+
+export const getComment = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const comments = await PostModel.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(id)
+                }
+            },
+            {
+                $unwind: "$comments"
+            }, {
+                $lookup: {
+                    from: "users",
+                    localField: "comments.userId",
+                    foreignField: "_id",
+                    as: "commentUser"
+                }
+            },
+            {
+                $unwind: "$commentUser"
+            },
+            {
+                $project: {
+                    _id: 1,
+                    comments: 1,
+                    username: "$commentUser.username",
+                    firstname: "$commentUser.firstname",
+                    lastname: "$commentUser.lastname",
+                    profilePicture: "$commentUser.profilePicture"
+
+                }
+            }
+        ])
+        console.log(comments, comments)
+        res.status(200).json(comments)
+    } catch (error) {
+        res.status(500).json(error);
+    }
+}
+
+
 // getAllposts
 
 export const getTimelinePosts = async (req, res) => {
@@ -143,35 +219,81 @@ export const getTimelinePosts = async (req, res) => {
                 $match: {
                     _id: new mongoose.Types.ObjectId(userId)
                 }
-            },{
+            },
+            {
                 $lookup: {
                     from: "posts",
                     localField: "following",
                     foreignField: "userId",
                     as: "followingPosts"
                 }
+            },
+            {
+                $unwind: "$followingPosts"
+            },
+            {
+                $addFields: {
+                    "followingPosts.userId": {
+                        $toObjectId: "$followingPosts.userId"
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "followingPosts.userId",
+                    foreignField: "_id",
+                    as: "followingPosts.user"
+                }
+            },
+            {
+                $unwind: "$followingPosts.user"
+            },
+            // {
+            //     $group: {
+            //         _id: "$_id",
+            //         followingPosts: { $push: "$followingPosts" }
+            //     }
+            // },
+            {
+                $unwind: "$followingPosts"
             }, {
                 $project: {
-                    followingPosts: 1,
-                    _id: 0
-                }
-            }
+                    _id: "$followingPosts._id",
+                    userId: "$followingPosts.userId",
+                    desc: "$followingPosts.desc",
+                    likes: "$followingPosts.likes",
+                    image: "$followingPosts.image",
+                    createdAt: "$followingPosts.createdAt",
+                    updatedAt: "$followingPosts.updatedAt",
+                    username: "$followingPosts.user.username",
+                    firstname: "$followingPosts.user.firstname",
+                    lastname: "$followingPosts.user.lastname",
+                    profilePicture: "$followingPosts.user.profilePicture"
+                },
+            },
 
-        ])
-        console.log(followingPosts, "foll postss")
-        const allPosts = currentUserPosts.concat(...followingPosts[0].followingPosts).sort((a, b) => {
+        ]);
+
+
+        // console.log(followingPosts)
+        const allPosts = currentUserPosts.concat(...followingPosts).sort((a, b) => {
             return b.createdAt - a.createdAt;
         })
-        
-
+        console.log(allPosts)
         const { page } = req.query;
-        const limit=3;
+        const limit = 3;
         const pageNumber = parseInt(page) || 1;
         const limitNumber = parseInt(limit);
         const startIndex = (pageNumber - 1) * limitNumber;
-        const endIndex = pageNumber*limitNumber;
+        const endIndex = pageNumber * limitNumber;
 
-        const posts = allPosts.slice(startIndex,endIndex)
+        const posts = allPosts.slice(startIndex, endIndex)
+
+        // console.log("///////////////////////")
+        // console.log(posts, "foll postss") 
+        // console.log("///////////////////////")
+
 
         for (const post of posts) {
             const params = {
@@ -180,7 +302,7 @@ export const getTimelinePosts = async (req, res) => {
             }
             const command = new GetObjectCommand(params);
             const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
-            console.log(url, "image urlll")
+            // console.log(url, "image urlll")
             post.image = url
         }
 
@@ -190,5 +312,4 @@ export const getTimelinePosts = async (req, res) => {
     }
 }
 
-// get reports
 

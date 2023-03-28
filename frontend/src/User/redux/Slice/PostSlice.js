@@ -4,7 +4,7 @@ import { BaseUrl } from "../Url";
 import { toast } from 'react-toastify';
 
 
-const msgToast=(msg)=>{
+const msgToast = (msg) => {
     toast.info(`${msg}`, {
         position: "top-center",
         autoClose: 5000,
@@ -18,7 +18,7 @@ const msgToast=(msg)=>{
 }
 
 
-const initialState = { posts:[], loading: false, error: false, uploading: false };
+const initialState = { posts: [], loading: false, error: false, uploading: false };
 
 
 export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectWithValue }) => {
@@ -29,7 +29,7 @@ export const uploadPost = createAsyncThunk("post/upload", async (data, { rejectW
         return rejectWithValue(error.response.data)
     }
 })
-export const fetchPosts = createAsyncThunk("post/get", async ({id,page}, { rejectWithValue }) => {
+export const fetchPosts = createAsyncThunk("post/get", async ({ id, page }, { rejectWithValue }) => {
     try {
         const response = await axios.get(`${BaseUrl}/post/${id}/timeline?page=${page}`)
         return response.data
@@ -63,9 +63,9 @@ export const editPost = createAsyncThunk('post/edit', async ({ id, postData }, {
     }
 })
 
-export const reportPost = createAsyncThunk('post/report',async({id,report},{rejectWithValue})=>{
+export const reportPost = createAsyncThunk('post/report', async ({ id, report }, { rejectWithValue }) => {
     try {
-        const {data} = await axios.post(`${BaseUrl}/report/${id}`,report)
+        const { data } = await axios.post(`${BaseUrl}/report/${id}`, report)
         return data
     } catch (error) {
         return rejectWithValue(error.response.data)
@@ -93,10 +93,9 @@ const uploadPostSlice = createSlice({
             return { ...state, loading: true, error: false };
         });
         builder.addCase(fetchPosts.fulfilled, (state, action) => {
-            // console.log("post timelineeeee",action)
+            console.log("post timelineeeee", action)
             //  state.posts=[...state.posts,...action.payload]
-            console.log("ppp",state.posts)
-            return { ...state ,posts:[action.payload,...state.posts ], loading: false, error: false };
+            return { ...state, posts: [...state.posts, ...action.payload], loading: false, error: false };
         });
         builder.addCase(fetchPosts.rejected, (state, action) => {
             return { ...state, loading: false, error: true };
@@ -106,19 +105,26 @@ const uploadPostSlice = createSlice({
             const updatedPosts = state.posts.filter(post => post._id !== postId);
             return { ...state, posts: updatedPosts, uploading: false, error: false };
         })
-       builder.addCase(editPost.fulfilled,(state,action)=>{
-        console.log('edit postsss',action.payload)
-        const postId = action.meta.arg.id;
-        const index = state.posts.filter(post=>post._id===postId)
-        if(index!==-1){
-            state.posts[index]=action.payload
-        }
-        return{...state,}
-       })
-       builder.addCase(reportPost.fulfilled,(state,action)=>{
-        msgToast(action.payload.msg)
-        return{...state}
-       })
+        builder.addCase(editPost.fulfilled, (state, action) => {
+            console.log('edit postsss', action.payload)
+            const postId = action.meta.arg.id;
+
+            const updatedPosts = state.posts.map(post => {
+                if (post._id === postId) {
+                    return {
+                        ...post,
+                        desc: action.payload.desc,
+                    };
+                }
+                return post; 
+            });
+            return { ...state,posts:updatedPosts }
+        })
+
+        builder.addCase(reportPost.fulfilled, (state, action) => {
+            msgToast(action.payload.msg)
+            return { ...state }
+        })
     },
 
 })

@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { likePost } from "../../api/requests";
 import { deletePost, editPost } from "../../redux/Slice/PostSlice";
 import PostReport from "../postreport/PostReport";
+import CommentModal from "../comment/CommentModal";
+import ErrorBoundary from '../error/ErrorBoundary';
 
 const Post = ({ data }) => {
   const { user } = useSelector((state) => state.auth.authData)
@@ -22,6 +24,7 @@ const Post = ({ data }) => {
   const [likes, setLikes] = useState(data.likes.length)
   const [modalOpened, setModalOpened] = useState(false)
   const [postEdit, setPostEdit] = useState(false)
+  const [commetModal, setCommentModal] = useState(false)
 
   const handleLike = () => {
     setLiked((prev) => !prev)
@@ -65,7 +68,10 @@ const Post = ({ data }) => {
   return (
     <div className="Post">
       <div>
-        <div>Hari k</div>
+        <div style={{ display: "block" }}>
+          <p style={{ margin: "0" }}>{data.username ? `${data.firstname} ${data.lastname}` : `${user.firstname} ${user.lastname}`}</p>
+          <p style={{ fontSize: "12px", margin: "0" }}>{data.username ? data.username : user.username}</p>
+        </div>
 
         <div className="dot" onClick={() => setDropactive(!dropActive)}>
           {dropActive ? (
@@ -81,7 +87,7 @@ const Post = ({ data }) => {
                   <UilTimes />
                 </div>
                 <div style={{ height: '200px' }} onClick={() => {
-                  
+
                   setModalOpened((modalOpened) => !modalOpened)
                   // setDropactive(!dropActive)
                 }}>Report</div>
@@ -94,16 +100,16 @@ const Post = ({ data }) => {
               <span></span>
             </>
           )}
-
           {modalOpened ? <PostReport modalOpened={modalOpened} setModalOpened={setModalOpened} id={data._id} /> : null}
+          <ErrorBoundary>
+            {commetModal ? <CommentModal commetModal={commetModal} setCommentModal={setCommentModal} post={data} /> : null}
+          </ErrorBoundary>
         </div>
-
-
       </div>
       <img src={data.image} alt="" />
       <div className="postReact">
         <img src={liked ? Heart : NotLike} alt="" onClick={handleLike} />
-        <img src={Comment} alt="" />
+        <img src={Comment} alt="" onClick={() => setCommentModal(true)} />
         <img src={Share} alt="" />
       </div>
       <span style={{ color: "$gray", fontSize: "12px" }}>{likes}Likes</span>
@@ -112,7 +118,7 @@ const Post = ({ data }) => {
           <b>{data.name}</b>
         </span>
         {postEdit ? <span> <textarea name="desc" ref={textareaRef} defaultValue={desc} onChange={(e) => setDesc(e.target.value)} />
-          <button onClick={handleChangepost}>save changes</button> <IoMdCloseCircleOutline  style={{ color: 'rgb(240, 44, 18)', fontSize: '24px' }} onClick={()=>setPostEdit(false)}/> </span> : <span>{data.desc}</span>}
+          <button onClick={handleChangepost}>save changes</button> <IoMdCloseCircleOutline style={{ color: 'rgb(240, 44, 18)', fontSize: '24px' }} onClick={() => setPostEdit(false)} /> </span> : <span>{data.desc}</span>}
       </div>
     </div>
   );

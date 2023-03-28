@@ -42,6 +42,6 @@ const UserSchema = mongoose.Schema(
 
 // UserSchema.index({ "expiresAt": 1 }, { expireAfterSeconds: 0 });
 
-const UserModel = mongoose.model("Users", UserSchema)
+const UserModel = mongoose.model("users", UserSchema)
 
 export default UserModel

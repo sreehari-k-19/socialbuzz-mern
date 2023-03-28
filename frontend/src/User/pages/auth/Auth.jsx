@@ -142,7 +142,7 @@ const Auth = () => {
                 value={data.password}
               />
               <p>{errors.password?.message}</p>
-              <div className="forgetpass"><Link to="/forgotpassword">forgotpassword ?</Link></div>
+              {isSignup?null:<div className="forgetpass"><Link to="/forgotpassword">forgotpassword ?</Link></div>}
             </div>
             <div>
               {isSignup && (

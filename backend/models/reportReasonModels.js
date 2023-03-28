@@ -7,6 +7,6 @@ const reportReasonSchema = new mongoose.Schema({
   }
 });
 
-const ReportReasonModel = mongoose.model('ReportReason', reportReasonSchema);
+const ReportReasonModel = mongoose.model('reportreasons', reportReasonSchema);
 
 export default ReportReasonModel;

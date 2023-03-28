@@ -1,14 +1,14 @@
 export const userColumnTitlle=    () => [
     {
-      accessorKey: 'name', //access nested data with dot notation
+      accessorKey: 'firstname', //access nested data with dot notation
       header: 'Name',
     },
     {
-      accessorKey: 'email', //normal accessorKey
+      accessorKey: 'username', //normal accessorKey
       header: 'Email',
     },
     {
-      accessorKey: 'date',
+      accessorKey: 'createdAt',
       header: 'StartDate',
     },
     {
@@ -17,25 +17,26 @@ export const userColumnTitlle=    () => [
     },
   ]
 
-
-  export  const data = [
+  export const ReportDetails= () => [
     {
-      name:'Dapune',
-      email: 'dapune@gmail.com',
-      date: '15/06/2022',
-      block: false,
+      accessorKey: 'reportedBy', //access nested data with dot notation
+      header: 'Reported By',
     },
     {
-      name:'Dapune',
-      email: 'dapune@gmail.com',
-      date: '15/06/2022',
-      block: false,
+      accessorKey: 'reason', //normal accessorKey
+      header: 'Reason',
+    },
+    // {
+    //   accessorKey: 'createdAt',
+    //   header: 'Reported At',
+    // },
+    {
+      accessorKey: 'totalReports',
+      header: 'TotalReports ',
     },
     {
-      name:'Dapune',
-      email: 'dapune@gmail.com',
-      date: '15/06/2022',
-      block: false,
+      accessorKey: 'postId',
+      header: 'Details of post ',
     },
-
+    
   ]

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import defaultCover from "../../../img/defaultCover.jpg";
 import Profile from "../../../img/defaultProfile.png";
 import { followUser, unFollowUser } from '../../redux/Slice/AuthSlice';
@@ -7,6 +8,7 @@ import { followUser, unFollowUser } from '../../redux/Slice/AuthSlice';
 
 const User = ({ person }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { user } = useSelector((state) => state.auth.authData)
   const [following, setFollowing] = useState(person.followers.includes(user._id));
   const handleFollow = () => {
@@ -15,7 +17,7 @@ const User = ({ person }) => {
     setFollowing((prev)=>!prev);
   }
   return (
-    <div className="follower">
+    <div className="follower" onClick={()=>navigate(`/profile/${person._id}`)}>
       <div>
         <img src={person.profilePicture || Profile} alt="" className='followerImage' />
         <div className="name">

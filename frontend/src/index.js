@@ -10,21 +10,26 @@ import { store, persistor } from './User/redux/Store';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-
-const clientId=process.env.REACT_APP_CLIENT_ID
-
+import {
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query'
+const clientId = process.env.REACT_APP_CLIENT_ID
+const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <GoogleOAuthProvider clientId ={clientId}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="*" element={<App />} />
-            </Routes>
-          </BrowserRouter>
-        </GoogleOAuthProvider>
+        <QueryClientProvider client={queryClient}>
+          <GoogleOAuthProvider clientId={clientId}>
+            <BrowserRouter>
+              <Routes>
+                <Route path="*" element={<App />} />
+              </Routes>
+            </BrowserRouter>
+          </GoogleOAuthProvider>
+        </QueryClientProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>

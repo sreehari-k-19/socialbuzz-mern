@@ -1,49 +1,59 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { PostsData } from "../../Data/PostsData";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { fetchPosts } from "../../redux/Slice/PostSlice";
 import CircularLoading from "../circularLoading/CircularLoading";
 import Post from "../post/Post";
-import './posts.scss';
+import "./posts.scss";
 
 const Posts = () => {
-  const dispatch = useDispatch()
-  const params = useParams()
-  let [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const { user } = useSelector((state) => state.auth.authData);
+  const { posts, loading, error } = useSelector((state) => state.post);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  // useEffect(() => {
+  //   return (() => {
+  //     dispatch(fetchPosts({ id: authData.user._id, page }))
+  //   });
+  // }, [dispatch, authData.user._id, page]);
 
-  const { user } = useSelector((state) => state.auth.authData)
-  let { posts, loading } = useSelector((state) => state.post)
-  
-  // if (posts) setData(posts);
+  // const handleLoadMore = () => {
+  //   setPage((prev)=>prev+1);
+  // };
 
   useEffect(() => {
-    return (() => dispatch(fetchPosts({ id: user._id, page })))
-  }, [])
+    return (() => {
+      fetchPost();
+    });
+  }, [user._id]);
 
-  const fetchNextPage = () => {
+  const fetchPost = () => {
     setPage(page + 1)
     dispatch(fetchPosts({ id: user._id, page })).then((response) => {
       if (response.payload.length === 0) {
         setHasMore(false);
       }
-      setData([...data, ...response.payload])
     })
-
   }
+  console.log("post ref", posts)
 
-  if (!data) return "no Posts";
-  if (params.id) data = data.filter((post) => post.userId === params.id)
+  let filteredPosts = posts;
+  if (id) filteredPosts = posts.filter((post) => post.userId === id);
+
   return (
-    <InfiniteScroll dataLength={data.length} next={fetchNextPage} hasMore={hasMore} loader={<CircularLoading />}>
+    <InfiniteScroll
+      dataLength={filteredPosts.length}
+      next={fetchPost}
+      hasMore={hasMore}
+      loader={<CircularLoading />}
+    >
       <div className="Posts">
-        { data?.map((post, id) => {
-          return <Post data={post} id={id} />;
-        })}
+        {filteredPosts.map((post, index) => (
+          <Post key={index} data={post} id={index} />
+        ))}
       </div>
     </InfiniteScroll>
   );

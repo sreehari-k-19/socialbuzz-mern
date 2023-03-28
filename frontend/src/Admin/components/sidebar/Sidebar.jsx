@@ -1,38 +1,33 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './sidebar.scss';
+import './Sidebar.scss';
 
 const sidebarNavItems = [
     {
         display: 'Dashboard',
         icon: <i className='bx bx-home'></i>,
-        to: '/',
-        section: ''
+        to: '/admin',
+        section: 'admin'
     },
     {
-        display: 'Users',
+        display: 'users',
         icon: <i className='bx bx-star'></i>,
-        to: '/users',
+        to: '/admin/users',
         section: 'users'
     },
     {
-        display: 'Blocked users',
-        icon: <i className='bx bx-calendar'></i>,
-        to: '/blockedUsers',
-        section: 'blockedUsers'
+        display: 'blockedusers',
+        icon: <i className='bx bx-star'></i>,
+        to: '/admin/blockedusers',
+        section: 'blockedusers'
     },
     {
-        display: 'Reports',
-        icon: <i className='bx bx-user'></i>,
-        to: '/reports',
-        section: 'reports'
+        display: 'Post Reports',
+        icon: <i className='bx bx-star'></i>,
+        to: '/admin/allreports',
+        section: 'allreports'
     },
-    {
-        display: 'Lorem',
-        icon: <i className='bx bx-receipt'></i>,
-        to: '/lorem',
-        section: 'lorem'
-    },
+   
 ]
 
 const Sidebar = () => {
@@ -52,14 +47,15 @@ const Sidebar = () => {
 
     // change active index
     useEffect(() => {
-        const curPath = window.location.pathname.split('/')[1];
+        // const curPath = window.location.pathname.split('/')[2];
+        const curPath = sidebarNavItems.find(section => section.to === window.location.pathname)?.section ?? 'admin';
         const activeItem = sidebarNavItems.findIndex(item => item.section === curPath);
         setActiveIndex(curPath.length === 0 ? 0 : activeItem);
     }, [location]);
 
     return <div className='sidebar'>
         <div className="sidebar__logo">
-           Social Buzz
+           socialbuzz
         </div>
         <div ref={sidebarRef} className="sidebar__menu">
             <div

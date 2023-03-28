@@ -15,8 +15,9 @@ const reducers = combineReducers({
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['auth'],
 };
-console.log("env",process.env.NODE_ENV)
+
 const persistedReducer = persistReducer(persistConfig, reducers);
 
 const store = configureStore({

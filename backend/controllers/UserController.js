@@ -8,13 +8,12 @@ import jwt from 'jsonwebtoken';
 
 export const getAllUsers = async (req, res) => {
     try {
-        console.log("get alll iserssssssss..................")
         let users = await UserModel.find()
         users.map((user) => {
             const { password, ...otherDetails } = user._doc
             return otherDetails;
         })
-        console.log(users,"get all usersss")
+        console.log(users)
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json(error)
@@ -30,6 +29,7 @@ export const getUser = async (req, res) => {
         const user = await UserModel.findById(id);
         if (user) {
             const { password, ...otherDetails } = user._doc
+            console.log(otherDetails)
             res.status(200).json(otherDetails)
         } else {
             res.status(404).json("User does no exists")
@@ -43,7 +43,6 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const id = req.params.id;
-    console.log(id, req.body, "jsdkfjskfjkfkshadjsfh")
     const { _id, currentUserAdminStatus, password } = req.body;
     if (id === _id) {
         try {

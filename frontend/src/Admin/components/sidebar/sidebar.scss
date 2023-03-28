@@ -1,5 +1,3 @@
-@import '../../../variable.scss';
-
 .sidebar {
     position: fixed;
     top: 0;
@@ -49,10 +47,14 @@
             left: 50%;
             width: calc(100% - 40px);
             border-radius: 10px;
-            background:$buttonBg;
+            background-color: #308efe;
             z-index: -1;
             transform: translateX(-50%);
             transition: 0.3s ease-in-out;
         }
     }
+}
+a {
+    text-decoration: none;
+    color: unset;
 }

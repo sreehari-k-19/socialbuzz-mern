@@ -4,34 +4,31 @@ import { useParams } from "react-router-dom";
 import "./infoCard.scss";
 import ProfileModal from "../profileModal/ProfileModal";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserprofile } from "../../api/requests";
-import { LogOut } from "../../redux/Slice/AuthSlice";
+import { followUser, LogOut, unFollowUser } from "../../redux/Slice/AuthSlice";
 
-const InfoCard = () => {
+const InfoCard = ({profileData}) => {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth.authData);
   const params = useParams()
   const ProfileUserId = params.id;
-  const [profileUser, setProfileuser] = useState({})
   const [modalOpened, setModalOpened] = useState(false)
-  useEffect(() => {
-    const fetchProfileuser = async () => {
-      if (ProfileUserId === user._id) {
-        setProfileuser(user)
-      } else {
-        const profileUser = await getUserprofile(ProfileUserId)
-        setProfileuser(profileUser)
+  const [following, setFollowing] = useState(profileData?.followers?.includes(toString(user?._id)));
 
-      }
-    }
-    fetchProfileuser()
-  }, [user])
+  console.log("userrrr", profileData)
+ 
+  console.log("userrrr ffffffff", following)
+  const handleFollow = () => {
+    following ? dispatch(unFollowUser({ _id: profileData._id, user })) :
+      dispatch(followUser({ _id: profileData._id, user }))
+    setFollowing((prev) => !prev);
+  }
 
   const handleLogout = () => {
     dispatch(LogOut())
   }
+
   return (
-    <div className="InfoCard">
+    <div className="InfoCard" style={{ position: "fixed", top: "80px" }}>
       <div className="infoHead">
         <h4>Profile info</h4>
         {user._id === ProfileUserId ? (
@@ -48,21 +45,33 @@ const InfoCard = () => {
         <span>
           <b>Status</b>
         </span>
-        <span>  {profileUser.relationShip || "Not added"}</span>
+        <span>  {profileData.relationShip || "Not added"}</span>
       </div>
       <div className="info">
         <span>
           <b>Lives in</b>
         </span>
-        <span>  {profileUser.livesin || "Not added"}</span>
+        <span>  {profileData.livesin || "Not added"}</span>
       </div>
       <div className="info">
         <span>
           <b>Works at</b>
         </span>
-        <span>  {profileUser.worksAt || "Not added"}</span>
+        <span>  {profileData.worksAt || "Not added"}</span>
       </div>
-      <button className="button logout-button" onClick={handleLogout}>Logout</button>
+      {user._id === ProfileUserId ? (
+        <button className="button logout-button" onClick={handleLogout}>Logout</button>
+      ) : (
+        <button
+          className={
+            following ? "button fc-button UnfollowButton logout-button" : "button fc-button logout-button"
+          }
+          onClick={handleFollow}
+        >
+          {following ? "Unfollow" : "Follow"}
+        </button>
+      )}
+
     </div>
   );
 };
