@@ -5,6 +5,28 @@ import ReportModel from "../models/reportModels.js";
 import UserModel from "../models/userModels.js";
 import mongoose from "mongoose";
 
+
+export const getDashboard = async (req, res) => {
+    try {
+        const totalusers = await UserModel.countDocuments({})
+        const totalreports = await ReportModel.countDocuments({})
+        const totalblockedaccounts = await UserModel.countDocuments({ adminblocked: true })
+        const totalposts = await PostModel.countDocuments({})
+        const usersByWeek = await UserModel.aggregate([
+            {
+                $group: {
+                    _id: { $week: '$createdAt' },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+        const data = { totalusers, totalreports, totalblockedaccounts, totalposts, usersByWeek }
+        res.status(200).json(data)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+
 export const getReports = async (req, res) => {
     try {
         const reports = await ReportModel.find()
@@ -27,7 +49,7 @@ export const getReports = async (req, res) => {
         })
         res.status(200).json(userreports)
     } catch (error) {
-        console.error(error);
+        res.status(500).json(error)
     }
 }
 
