@@ -6,6 +6,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import AWS from "aws-sdk";
 import dotenv from 'dotenv'
 import ReportReasonModel from "../models/reportReasonModels.js";
+import ReportModel from "../models/reportModels.js";
 dotenv.config()
 
 const bucketName = process.env.AWS_BUCKET_NAME
@@ -142,15 +143,15 @@ export const addComment = async (req, res) => {
                 }
             }, { new: true })
             const com = post.comments[post.comments.length - 1]
-            const { username, lastname, firstname,profilePicture } = user;
+            const { username, lastname, firstname, profilePicture } = user;
             const newComment = {
-                username, lastname,profilePicture, firstname,comments:com
+                username, lastname, profilePicture, firstname, comments: com
             }
             console.log(newComment)
             return res.status(200).json(newComment)
         }
     } catch (error) {
-
+        res.status(500).json(error);
     }
 
 }
@@ -214,7 +215,7 @@ export const getTimelinePosts = async (req, res) => {
     })
     try {
         const currentUserPosts = await PostModel.find({ userId: userId })
-        const followingPosts = await UserModel.aggregate([
+        let followingPosts = await UserModel.aggregate([
             {
                 $match: {
                     _id: new mongoose.Types.ObjectId(userId)
@@ -249,12 +250,6 @@ export const getTimelinePosts = async (req, res) => {
             {
                 $unwind: "$followingPosts.user"
             },
-            // {
-            //     $group: {
-            //         _id: "$_id",
-            //         followingPosts: { $push: "$followingPosts" }
-            //     }
-            // },
             {
                 $unwind: "$followingPosts"
             }, {
@@ -275,8 +270,16 @@ export const getTimelinePosts = async (req, res) => {
 
         ]);
 
+        const reportPosts = await ReportModel.find({
+            'user.userId': mongoose.Types.ObjectId(userId)
+        })
+        console.log(reportPosts,"rpp postt")
+        if (reportPosts) {
+            followingPosts = followingPosts.filter(post => !reportPosts.some(report => report.postId.equals(post._id)));
+        }
 
-        // console.log(followingPosts)
+        console.log(followingPosts, reportPosts)
+
         const allPosts = currentUserPosts.concat(...followingPosts).sort((a, b) => {
             return b.createdAt - a.createdAt;
         })

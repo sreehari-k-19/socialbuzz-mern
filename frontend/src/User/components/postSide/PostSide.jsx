@@ -3,11 +3,11 @@ import Posts from "../posts/Posts";
 import PostShare from "../postShare/PostShare";
 import "./postSide.scss";
 
-const PostSide = () => {
+const PostSide = ({ ownUser }) => {
   return (
     <div className="postSide">
-      <PostShare />
-      <Posts />
+       {ownUser ?<PostShare />: null}
+      <Posts /> 
     </div>
   );
 };

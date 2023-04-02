@@ -16,6 +16,7 @@ import BlockedUsers from './Admin/pages/BlockedUsers';
 import Dashboard from './Admin/pages/Dashboard/Dashboard';
 import ErrorBoundary from './User/components/error/ErrorBoundary';
 import Reports from './Admin/pages/reports/Reports';
+import Userdetails from './Admin/components/userdetails/Userdetails';
 
 
 
@@ -40,6 +41,7 @@ function App() {
             <Route path='/admin/users' element={<Users />} />
             <Route path='/admin/blockedusers' element={<BlockedUsers />} />
             <Route path='/admin/allreports' element={<Reports />} />
+            <Route path='/admin/users/:id' element={<Userdetails/>}/>
           </Route>
         </Routes>
       </ErrorBoundary>

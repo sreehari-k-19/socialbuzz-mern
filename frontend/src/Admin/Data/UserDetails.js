@@ -11,10 +11,6 @@ export const userColumnTitlle=    () => [
       accessorKey: 'createdAt',
       header: 'StartDate',
     },
-    {
-      accessorKey: 'block',
-      header: 'Block status',
-    },
   ]
 
   export const ReportDetails= () => [

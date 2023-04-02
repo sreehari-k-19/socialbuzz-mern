@@ -1,55 +1,52 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
 import { useQuery } from 'react-query';
-import { getAllReports } from "../../api/request";
+import { getAllReports, getPost } from "../../api/request";
 import { ReportDetails } from "../../data/userDetails";
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    MenuItem,
-    Stack,
-    TextField,
-    Tooltip,
-} from '@mui/material';
+import { Box, IconButton } from '@mui/material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
+import InfoIcon from '@mui/icons-material/Info';
+
 import { Delete, Edit } from '@mui/icons-material';
+import PostDetails from "./PostDetails";
 
 const GetReports = () => {
-    const { isLoading, error, data } = useQuery('AllReports', getAllReports);
-    console.log("all user daaaaa", data)
-
+    const [reports, setReports] = useState([])
+    useEffect(() => {
+        const getRepots = async () => {
+            const { data } = await getAllReports()
+            setReports(data)
+        }
+        getRepots()
+    },[])
+    const [postModal, setPostModal] = useState(false)
+    const [postId, setPostId] = useState();
     const columns = useMemo(ReportDetails, []);
-    const handleDeleteRow = (row) => {
-
+    const getPostinfo = (postId) => {
+        setPostId(postId);
+        setPostModal(true);
     }
-    const getPostinfo = (row) => {
-        alert("r")
-        console.log("<<<row", row)
-    }
-
-    if (isLoading) return <div>Loadinggg....</div>;
     return (
         <>
-            <MaterialReactTable columns={columns} data={data} renderRowActions={({ row, table }) => (
-                <Box sx={{ display: 'flex', gap: '1rem' }}>
-                    <Tooltip arrow placement="left" title="Edit">
-                        <IconButton onClick={() => getPostinfo(row)}>
-                            <Edit />
+            <MaterialReactTable columns={columns} data={reports} enableRowActions positionActionsColumn="last"
+                renderRowActions={({ row, table }) => (
+                    <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
+                        <IconButton
+                            color="secondary"
+                            onClick={() => {getPostinfo(row.original.postId)}}
+                        >
+                            <InfoIcon />
                         </IconButton>
-                    </Tooltip>
-                    <Tooltip arrow placement="right" title="Delete">
-                        <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                            <Delete />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            )} />
+                    </Box>
+                )} />
+            {postModal ? <PostDetails
+                postModal={postModal}
+                setPostModal={setPostModal}
+                postId={postId}
+            /> : null}
         </>
     )
 }
 
-export default GetReports
+export default GetReports;
+

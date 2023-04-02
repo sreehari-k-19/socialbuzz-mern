@@ -34,7 +34,7 @@ const msgToast=(msg,mail)=>{
         theme: "colored",
     });
 }
-
+let toastid;
 const initialState = {
     authData: null,
     loading: false,
@@ -51,7 +51,6 @@ export const signUp = createAsyncThunk("auth/signup", async (formData, { rejectW
         return response.data;
     } catch (error) {
         alert("error")
-        console.log(error.response);
         console.log(error.response.data);
         return rejectWithValue(error.response.data)
     }
@@ -63,7 +62,7 @@ export const logIn = createAsyncThunk("auth/login", async (formData, { rejectWit
         return { data, status };
     } catch (error) {
         console.log(error.response.data)
-        return rejectWithValue(error.response.data)
+        return rejectWithValue(error.response)
     }
 })
 
@@ -126,6 +125,22 @@ export const googleRegister = createAsyncThunk('googleregister',async(token,{rej
         return rejectWithValue(error.response.data)
     }
 })
+export const updateProfilepicture = createAsyncThunk('updateProfilepicture',async({id,file},{rejectWithValue})=>{
+    try {
+        const {data}=await axios.put(`${BaseUrl}/user/${id}/updateprofile`,file)
+        return data; 
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+export const UpdateCoverPicture = createAsyncThunk('UpdateCoverPicture',async({id,file},{rejectWithValue})=>{
+    try {
+        const {data}=await axios.put(`${BaseUrl}/user/${id}/updatecover`,file)
+        return data; 
+    } catch (error) {
+        return rejectWithValue(error.response)
+    }
+})
 
 
 const authSlice = createSlice({
@@ -157,9 +172,6 @@ const authSlice = createSlice({
             };
         });
         builder.addCase(signUp.fulfilled, (state, action) => {
-            alert("res")
-
-            console.log(action, action.payload, action.payload.status)
             infoToast(action.payload.msg)
             // localStorage.setItem('profile', JSON.stringify(action?.payload))
             return {
@@ -167,8 +179,6 @@ const authSlice = createSlice({
             };
         });
         builder.addCase(signUp.rejected, (state, action) => {
-            alert("r")
-            console.log("ac", action)
             return {
                 ...state, loading: false, error: action.payload,
             }
@@ -179,7 +189,6 @@ const authSlice = createSlice({
             };
         });
         builder.addCase(logIn.fulfilled, (state, action) => {
-            console.log(action, action.payload.data, "login action")
             const { data, status } = action.payload
             if (status === 201) {
                 infoToast(data.email)
@@ -193,7 +202,13 @@ const authSlice = createSlice({
             };
         });
         builder.addCase(logIn.rejected, (state, action) => {
-
+            const { data, status } = action.payload
+            if (status === 403) {
+                msgToast("your account is blocked by admin!","")
+                return {
+                    ...state, loading: false, error: false
+                };
+            }
             return {
                 ...state, loading: false, error: action.payload,
             }
@@ -244,6 +259,30 @@ const authSlice = createSlice({
         builder.addCase(resetPassword.rejected,(state,action)=>{
             msgToast(action.payload.msg,"")
             return{...state}
+        })
+        builder.addCase(googleRegister.fulfilled,(state,action)=>{
+            console.log("google auth...",action.payload)
+            localStorage.setItem('profile', JSON.stringify(action?.payload))
+            return {
+                ...state, authData: action?.payload, loading: false, error: false
+            };
+        })
+        
+        builder.addCase(updateProfilepicture.pending,(state,action)=>{
+            toastid = toast.loading('Uploading...', { position: 'top-center' });
+            return{...state}
+        })
+        builder.addCase(updateProfilepicture.fulfilled,(state,action)=>{
+            toast.update(toastid, { render: "profileChanged.", type: "success", isLoading: false, position: 'top-center', autoClose: 3000 });
+            return { ...state, authData: { ...state.authData, user: { ...state.authData.user, profilePicture: action.payload.profilePicture } } }
+        })
+        builder.addCase(UpdateCoverPicture.pending,(state,action)=>{
+            toastid = toast.loading('Uploading...', { position: 'top-center' });
+            return{...state}
+        })
+        builder.addCase(UpdateCoverPicture.fulfilled,(state,action)=>{
+            toast.update(toastid, { render: "profileChanged.", type: "success", isLoading: false, position: 'top-center', autoClose: 3000 });
+            return { ...state, authData: { ...state.authData, user: { ...state.authData.user, coverPicture: action.payload.coverPicture } } }
         })
     }
 

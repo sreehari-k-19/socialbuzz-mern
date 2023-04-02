@@ -4,7 +4,8 @@ import Logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { changeForm, logIn, signUp, googleRegister } from "../../redux/Slice/AuthSlice";
 import { useForm } from "react-hook-form";
-import { useGoogleLogin } from '@react-oauth/google';
+
+import { useGoogleLogin, GoogleLogin } from '@react-oauth/google';
 import { signupvalidationSchema, loginvalidationSchema } from '../../validation/Userathvalidation'
 import { yupResolver } from '@hookform/resolvers/yup';
 import "./Auth.scss";
@@ -58,7 +59,7 @@ const Auth = () => {
   const googelLogin = useGoogleLogin({
     onSuccess: codeResponse => {
       console.log(codeResponse)
-      const {access_token}=codeResponse;
+      const { access_token } = codeResponse;
       dispatch(googleRegister(codeResponse))
     }
   });
@@ -142,7 +143,7 @@ const Auth = () => {
                 value={data.password}
               />
               <p>{errors.password?.message}</p>
-              {isSignup?null:<div className="forgetpass"><Link to="/forgotpassword">forgotpassword ?</Link></div>}
+              {isSignup ? null : <div className="forgetpass"><Link to="/forgotpassword">forgotpassword ?</Link></div>}
             </div>
             <div>
               {isSignup && (
@@ -178,8 +179,20 @@ const Auth = () => {
           <button className="button infoButton" type="submit" disabled={loading}>
             {loading ? "loading..." : isSignup ? "Signup" : "Sign in"}
           </button>
+          <div className="separator">
+            <div className="line"></div>
+            <h4>or</h4>
+            <div className="line"></div>
+          </div>
+          {isSignup ? null :
+            <GoogleLogin
+              onSuccess={credentialResponse => {
+                console.log(credentialResponse);
+                dispatch(googleRegister(credentialResponse))
+              }}
+            />
+          }
         </form>
-        {/* <button className="googlebutton" onClick={googelLogin}><span><img src="" alt=""/><span>Google Login</span></span></button> */}
       </div>
 
     </div>

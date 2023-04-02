@@ -1,0 +1,104 @@
+.userdetailsheader{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+  width: 100%;
+  button{
+    width: 90px;
+    height: 40px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 530;
+  }
+  .button-block{
+    border: 1px solid #ef5350;
+    background-color: #ffff;
+    color: #ef5350;
+  }
+  .button-unblock{
+    border:none;
+    background-color: #ef5350;
+    color: white;
+  }
+}
+.userdetails {
+  div:nth-of-type(1) {
+    height: 200px;
+    display: flex;
+    gap: 30px;
+    img {
+      min-width: 100px;
+      border-radius: 24px;
+    }
+    .userinfo {
+      padding: 7px;
+      border: 1px solid #e2dcdc;
+      width: 70%;
+      min-height: 200px;
+      border-radius: 7px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 150px 50px;
+      span {
+        padding: 5px;
+      }
+      div:nth-of-type(1) {
+        grid-column: 1/2;
+        grid-row: 1/2;
+        padding: 10px;
+        display: flex;
+        div {
+          display: flex;
+          gap: 5px;
+          flex-direction: column;
+        }
+        div:nth-of-type(1) {
+          span {
+            font-weight: 600;
+          }
+        }
+      }
+      div:nth-of-type(2) {
+        grid-column: 2/3;
+        padding: 10px;
+        grid-row: 1/2;
+        display: flex;
+
+        div {
+          display: flex;
+          gap: 5px;
+          flex-direction: column;
+        }
+        div:nth-of-type(1) {
+          span {
+            font-weight: 600;
+          }
+        }
+      }
+      div:nth-of-type(3){
+        border-top: 1px solid #e2dcdc;
+        grid-column: 1/3;
+        grid-row: 2/3;
+        height: 100%;
+        display: flex;
+        justify-content: space-around;
+        div:nth-of-type(1){
+            border-right: 1px;
+        }
+        div {
+          span:nth-of-type(1) {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+.Posts{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;   
+}

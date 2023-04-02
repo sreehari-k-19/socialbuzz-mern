@@ -15,7 +15,7 @@ const Profile = () => {
   const params = useParams();
   const [profileData, setProfileData] = useState({})
   const ProfileUserId = params.id;
-
+  const [ownUser, setOwnuser] = useState(true)
 
   useEffect(() => {
     const fetchProfileuser = async () => {
@@ -24,6 +24,7 @@ const Profile = () => {
       } else {
         const { data } = await getUserprofile(ProfileUserId)
         setProfileData(data)
+        setOwnuser(false)
       }
     }
     fetchProfileuser();
@@ -38,7 +39,7 @@ const Profile = () => {
 
         <ProfieCard location="profilePage" profileData={profileData} />
 
-        <PostSide />
+        <PostSide ownUser={ownUser} />
       </div>
       <RightSide />
     </div >

@@ -1,13 +1,13 @@
 import React, {useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import defaultCover from "../../../img/defaultCover.jpg";
 import Profile from "../../../img/defaultProfile.png";
-import { Modal, useMantineTheme } from "@mantine/core";
 import "./profileCard.scss";
+import UpdateUserImages from "../userImageupdate/UpdateUserImages";
 
 const ProfieCard = ({ location ,profileData}) => {
-  const theme = useMantineTheme();
+  const { user } = useSelector((state) => state.auth.authData)
   const { posts } = useSelector((state) => state.post)
   const [showModal, setShowModal] = useState(false);
   const [image, setImage] = useState(null);
@@ -29,18 +29,19 @@ const ProfieCard = ({ location ,profileData}) => {
       setShowModal(true)
     }
   }
+
   return (
     <div className={`ProfileCard ${location === "profilePage" ? 'primary-classname' : 'homeProfileCard'}`} >
       <div className="ProfileImages">
         <label htmlFor="coverPic" style={{ width: "100%" }}>
           <img src={profileData?.coverPicture ? profileData?.coverPicture : defaultCover} alt="" title="Click to change cover" id='coverPicture' className="coverPicture" />
         </label>
-        <input type="file" id="coverPic" onChange={handleCoverchange} />
+        {user._id ===profileData._id?<input type="file" id="coverPic" onChange={handleCoverchange} />:null }
         <label htmlFor="profilePic" style={{ position: 'absolute', bottom: '-3rem' }}>
-          <img src={profileData?.profilePicture ? profileData?.coverPicture : Profile} alt="" id="profilePicture" className="profilePicture" />
+          <img src={profileData?.profilePicture ? profileData?.profilePicture : Profile} alt="" id="profilePicture" className="profilePicture" />
         </label>
-        <input type="file" id="profilePic" onChange={handleProfileChange} />
-        {showModal ? profilePicture(showModal, setShowModal, theme, image, cover) : ""}
+        {user._id ===profileData._id ? <input type="file" id="profilePic" onChange={handleProfileChange} />:null }
+        {showModal ?<UpdateUserImages showModal={showModal} setShowModal={setShowModal} image={image} cover={cover} /> : ""}
       </div>
       <div className="ProfileName">
         <span>{profileData?.firstname} {profileData.lastname}</span>
@@ -88,23 +89,4 @@ const ProfieCard = ({ location ,profileData}) => {
 
 export default ProfieCard;
 
-function profilePicture(showModal, setShowModal, theme, image, cover) {
-  return (
-    <Modal overlayColor={
-      theme.colorScheme === "dark"
-        ? theme.colors.dark[9]
-        : theme.colors.gray[2]
-    }
-      overlayOpacity={0.55}
-      overlayBlur={3}
-      size="55%"
-      opened={showModal}
-      onClose={() => setShowModal(false)}>
-      <div className="changeImage">
-        <h1>hello</h1>
-        <img src={URL.createObjectURL(image)} alt="" />
-        {cover ? <button>cover</button> : <button>profile</button>}
-      </div>
-    </Modal>
-  )
-}
+

@@ -4,7 +4,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { OAuth2Client } from 'google-auth-library';
+import jwt_decode from "jwt-decode";
 import { mailSender } from "../helpers/mailSender.js";
+import { getImageUrl } from "../helpers/s3.js";
 
 export const registerUser = async (req, res) => {
     console.log("reg")
@@ -63,7 +65,7 @@ export const verifiy = async (req, res) => {
         })
         if (!token) return res.status(400).send({ message: "Invalid link" });
         user.expiresAt = null;
-        console.log("1")
+        // console.log("1")
         //    const updateUser = await UserModel.findOneAndUpdate(
         //         { _id: req.params.id },
         //         { $unset: { expiresAt: "" } },
@@ -74,7 +76,7 @@ export const verifiy = async (req, res) => {
         //     { $unset: { expiresAt: 1 } }
         // );
         // console.log(updateUser.toObject());
-        console.log(2)
+        // console.log(2)
         await user.save();
         await token.remove();
         res.status(200).send({ message: "Email verified successfully" });
@@ -94,7 +96,7 @@ export const loginUser = async (req, res) => {
     try {
         const user = await UserModel.findOne({ username: username })
         if (user) {
-            console.log(user, "uesr")
+            if (user.adminblocked) return res.status(403).json()
             if (user.expiresAt) {
                 console.log("expire at")
                 let token = await verificationModel.findOne({ userId: user._id });
@@ -122,7 +124,9 @@ export const loginUser = async (req, res) => {
                 const token = jwt.sign({
                     username: user.username, id: user._id
                 }, process.env.JWTKEY, { expiresIn: '1h' })
-                console.log(("login", token))
+                if (user.profilePicture) user.profilePicture = await getImageUrl("profile", user.profilePicture)
+                if (user.coverPicture) user.coverPicture = await getImageUrl("coverpicture", user.coverPicture)
+                console.log(user)
                 res.status(200).json({ user, token })
             }
 
@@ -185,19 +189,30 @@ export const resetPassword = async (req, res) => {
 }
 
 export const googleRegister = async (req, res) => {
-    const { access_token } = req.body
-    console.log("googeleee", req.body,process.env.CLIENT_ID,access_token)
-
+    const { credential } = req.body
     try {
-        const clientId=process.env.CLIENT_ID
-        const client = new OAuth2Client(clientId)
-        const ticket = await client.verifyIdToken({
-            idToken: access_token,
-            audience: clientId,
-        })
-        const data = ticket.getPayload()
-        console.log("data",data)
+        let decoded = await jwt_decode(credential);
+        const { given_name, family_name, email, sub } = decoded
+        const user = await UserModel.findOne({ googleId: sub })
+        if (user) {
+            const token = jwt.sign({
+                username: user.username, id: user._id
+            }, process.env.JWTKEY, { expiresIn: '1h' })
+            if (user.profilePicture) user.profilePicture = await getImageUrl("profile", user.profilePicture)
+            if (user.coverPicture) user.coverPicture = await getImageUrl("coverpicture", user.coverPicture)
+            console.log("00000000", user)
+            res.status(200).json({ user, token })
+        } else {
+            const newUser = new UserModel({ username: email, firstname: given_name, lastname: family_name, googleId: sub, expiresAt: null })
+            const user = await newUser.save()
+            const token = jwt.sign({
+                username: user.username, id: user._id
+            }, process.env.JWTKEY, { expiresIn: '1h' })
+            res.status(200).json({ user, token })
+        }
+
     } catch (error) {
+        console.log(error)
         res.status(500).json({ message: error.message })
     }
 }

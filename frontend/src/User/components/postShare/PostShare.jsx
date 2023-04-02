@@ -48,9 +48,9 @@ const PostShare = () => {
     setImage(null);
     descRef.current.value = ""
   }
-  console.log(user._id,"userrridddd")
+
   const handleSubmit = async (e) => {
-    console.log(user, "usrrrr")
+
     e.preventDefault();
     const newPost = {
       userId: user._id,
@@ -74,7 +74,7 @@ const PostShare = () => {
   return (
 
     <div className="PostShare">
-      <img src={user.profilePicture ? user.coverPicture : Profile} alt="" />
+      <img src={user.profilePicture ? user.profilePicture : Profile} alt="" />
 
       <div>
         <input type="text" ref={descRef} required placeholder="What's Happening" />

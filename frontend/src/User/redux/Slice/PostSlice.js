@@ -116,14 +116,16 @@ const uploadPostSlice = createSlice({
                         desc: action.payload.desc,
                     };
                 }
-                return post; 
+                return post;
             });
-            return { ...state,posts:updatedPosts }
+            return { ...state, posts: updatedPosts }
         })
 
         builder.addCase(reportPost.fulfilled, (state, action) => {
+            const postId = action.meta.arg.id;
+            const updatedPosts = state.posts.filter(post => post._id !== postId)
             msgToast(action.payload.msg)
-            return { ...state }
+            return { ...state, posts: updatedPosts }
         })
     },
 

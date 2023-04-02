@@ -1,5 +1,4 @@
-// import axios from "axios";
-
+import axios from "axios";
 // const API = axios.create({ baseURL: "http://localhost:5000" });
 
 // // API.interceptors.request.use((req) => {
@@ -10,9 +9,12 @@
 // //     return req;
 // //   });
 
-// export const getUser = () => API.get(`/admin/getAllUsers`);
+const baseURL=process.env.REACT_APP_baseURL
+export const getUserrr = () => axios.get(`${baseURL}/admin/getAllUsers`);
+export const getUser = (id) => axios.get(`${baseURL}/admin/user/${id}`);
+export const getPosts =(id)=>axios.get(`${baseURL}/admin/getposts/${id}`)
+export const getPost =(id)=>axios.get(`${baseURL}/admin/getpost/${id}`)
 console.log(process.env.REACT_APP_baseURL)
 // const baseURL="http://localhost:5000"
-const baseURL=process.env.REACT_APP_baseURL
 export const getAllUsers = () => fetch(`${baseURL}/admin/getAllUsers`).then((res)=>res.json());
-export const getAllReports = () => fetch(`${baseURL}/admin/allreports`).then((res)=>res.json());
+export const getAllReports = () => axios.get(`${baseURL}/admin/allreports`);

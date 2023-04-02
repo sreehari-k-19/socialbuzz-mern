@@ -8,7 +8,6 @@ const UserSchema = mongoose.Schema(
         },
         password: {
             type: String,
-            required: true
         },
         firstname: {
             type: String,
@@ -22,20 +21,28 @@ const UserSchema = mongoose.Schema(
             type: Boolean,
             default: false
         },
+        googleId: {
+            type: String,
+            unique: true,
+        },
         profilePicture: String,
         coverPicture: String,
         about: String,
         livesin: String,
         worksAt: String,
         relationShip: String,
-        country:String,
+        country: String,
         followers: [],
         following: [],
         expiresAt: {
             type: Date,
             default: Date.now(),
             expires: 600 // expires after 600 seconds 
-          }
+        },
+        adminblocked: {
+            type: Boolean,
+            default: false
+        }
     },
     { timestamps: true, }
 )

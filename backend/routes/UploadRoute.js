@@ -43,7 +43,6 @@ router.post('/', upload.single('file'), async (req, res) => {
     let uniqueCode = uuidv4();
     req.body.image = uniqueCode
     console.log("reqbody", req.body)
-
     console.log(req.file);
     const uploadParams = {
         Bucket: bucketName,
@@ -81,28 +80,5 @@ router.post('/', upload.single('file'), async (req, res) => {
 
 
 
-//get image
-
-
-// router.get('/gt', async (req, res) => {
-//     console.log("fdsfk")
-//     const post = {
-//         img: "3-2-burger-free-png-image.png"
-//     }
-//     const params = {
-//         Bucket: bucketName,
-//         Key: post.img
-//     }
-//     const command = new GetObjectCommand(params);
-//     const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
-//     console.log(url);
-
-//     //deletee/............
-
-//     s3.deleteObject(params, function (err, data) {
-//         if (err) console.log(err, err.stack);
-//         else console.log(data);
-//     });
-// })
 
 export default router;

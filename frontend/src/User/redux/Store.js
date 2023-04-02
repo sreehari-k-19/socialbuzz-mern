@@ -5,11 +5,13 @@ import { persistStore,persistReducer } from 'redux-persist';
 import thunk from 'redux-thunk';
 import authReducer from './Slice/AuthSlice';
 import postReducer from './Slice/PostSlice';
+import AdminReducer from '../../Admin/slice/Adminslice';
 
 
 const reducers = combineReducers({
     auth: authReducer,
     post:postReducer,
+    admin:AdminReducer,
 });
 
 const persistConfig = {

@@ -17,10 +17,10 @@ const User = ({ person }) => {
     setFollowing((prev)=>!prev);
   }
   return (
-    <div className="follower" onClick={()=>navigate(`/profile/${person._id}`)}>
+    <div className="follower" >
       <div>
-        <img src={person.profilePicture || Profile} alt="" className='followerImage' />
-        <div className="name">
+        <img src={person.profilePicture || Profile} alt="" className='followerImage' onClick={()=>navigate(`/profile/${person._id}`)} />
+        <div className="name" onClick={()=>navigate(`/profile/${person._id}`)}>
           <span>{person.firstname}</span>
           <span>@ {person.username}</span>
         </div>
