@@ -23,7 +23,7 @@ const Chat = () => {
     const socket = useRef();
 
     useEffect(() => {
-        socket.current = io('http://localhost:8800');
+        socket.current = io('https://socket.socialbuzz.fun');
         socket.current.emit('new-user-add', user._id)
         socket.current.on('get-users', (users) => {
             setOnlineUsers(users)

@@ -1,6 +1,6 @@
 import axios from "axios"
 import { async } from "react-input-emoji";
-const baseURL = 'http://localhost:5000';
+const baseURL = process.env.REACT_APP_baseURL;
 
 export const likePost = async (postId, userId) => await axios.put(`${baseURL}/post/${postId}/like`, { userId: userId })
 
