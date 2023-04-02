@@ -19,7 +19,7 @@ import AdminRoute from './routes/AdminRoutes.js'
 const app = express();
 app.use(bodyParser.json({limit:"30mb", extended:true}));
 app.use(bodyParser.urlencoded({limit:"30mb", extended:true}))
-app.use(cors())
+app.use(cors({origin:"*"}))
 dotenv.config()
 
 mongoose.connect(process.env.MONGODB,{useNewUrlParser:true, useUnifiedTopology:true}).then(()=>{
