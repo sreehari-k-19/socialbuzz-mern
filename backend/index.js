@@ -28,7 +28,7 @@ app.use(cors({origin:[
 dotenv.config()
 
 mongoose.connect(process.env.MONGODB,{useNewUrlParser:true, useUnifiedTopology:true}).then(()=>{
-    app.listen(process.env.port,()=>{
+    app.listen(5000,()=>{
         console.log('port 5000')
     })
 }).catch((error)=>console.log(error))
