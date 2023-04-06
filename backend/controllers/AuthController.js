@@ -123,7 +123,7 @@ export const loginUser = async (req, res) => {
             } else {
                 const token = jwt.sign({
                     username: user.username, id: user._id
-                }, process.env.JWTKEY, { expiresIn: '1h' })
+                }, process.env.JWTKEY, { expiresIn: '3h' })
                 if (user.profilePicture) user.profilePicture = await getImageUrl("profile", user.profilePicture)
                 if (user.coverPicture) user.coverPicture = await getImageUrl("coverpicture", user.coverPicture)
                 console.log(user)

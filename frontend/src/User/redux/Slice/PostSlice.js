@@ -71,6 +71,15 @@ export const reportPost = createAsyncThunk('post/report', async ({ id, report },
         return rejectWithValue(error.response.data)
     }
 })
+export const deleteComment = createAsyncThunk('deleteComment', async ({ id, postId }, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.delete(`${BaseUrl}/post/deletecomment/${id}/${postId}`)
+        return data
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
+
 let toastid;
 const uploadPostSlice = createSlice({
     name: "post",

@@ -6,18 +6,19 @@ import thunk from 'redux-thunk';
 import authReducer from './Slice/AuthSlice';
 import postReducer from './Slice/PostSlice';
 import AdminReducer from '../../Admin/slice/Adminslice';
-
+import AdminAuthReducer  from '../../Admin/slice/Authadmin';
 
 const reducers = combineReducers({
     auth: authReducer,
     post:postReducer,
     admin:AdminReducer,
+    adminauth:AdminAuthReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth'],
+  whitelist: ['auth','adminauth'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);

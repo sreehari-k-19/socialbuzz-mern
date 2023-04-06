@@ -1,22 +1,23 @@
 import React, { useState } from 'react'
 import { Modal, useMantineTheme, ScrollArea } from "@mantine/core";
-import { useQuery } from 'react-query';
+import { useDispatch} from "react-redux";
 import { getPost } from '../../api/request';
 import { useEffect } from 'react';
 import Userposts from '../userposts/Userposts';
-const PostDetails = ({ postModal, setPostModal, postId }) => {
-    const [post, setPost] = useState({})
+import { blockPost } from '../../slice/Adminslice';
+const PostDetails = ({ postModal, setPostModal, post }) => {
+    const [block, setBlock] = useState(post?.blocked)
+    const dispatch =useDispatch()
     const theme = useMantineTheme();
-
-    useEffect(() => {
-        const getPostInfo = async () => {
-            const { data } = await getPost(postId);
-            console.log("...;;.;;;.;",data)
-            setPost(data)
-        }
-        getPostInfo()
-    }, [])
-    console.log("p11p1p1p1",post)
+    const customTitle = (
+        <div className='userdetailsheader'>
+          <div>
+            <p style={{ fontSize: '17px', color: '#171717' }}> details</p>
+          </div>
+          <div>
+            <button className={block?"button-unblock":"button-block"}  onClick={()=>{dispatch(blockPost(post._id));setBlock(!block)}}>{block ? "unblock" : "block"}</button></div>
+        </div>
+      );
     return (
         <>
             {
@@ -30,6 +31,7 @@ const PostDetails = ({ postModal, setPostModal, postId }) => {
                     overlayBlur={3}
                     size="xl"
                     opened={postModal}
+                    title={customTitle}
                     onClose={() => setPostModal(false)}
                 >
                     <>

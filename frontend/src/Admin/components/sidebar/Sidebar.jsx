@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch} from "react-redux";
 import './Sidebar.scss';
+import { AdminLogOut } from '../../slice/Authadmin';
 
 const sidebarNavItems = [
     {
@@ -27,10 +29,11 @@ const sidebarNavItems = [
         to: '/admin/allreports',
         section: 'allreports'
     },
-   
+
 ]
 
 const Sidebar = () => {
+    const dispatch=useDispatch()
     const [activeIndex, setActiveIndex] = useState(0);
     const [stepHeight, setStepHeight] = useState(0);
     const sidebarRef = useRef();
@@ -55,7 +58,7 @@ const Sidebar = () => {
 
     return <div className='sidebar'>
         <div className="sidebar__logo">
-           socialbuzz
+            socialbuzz
         </div>
         <div ref={sidebarRef} className="sidebar__menu">
             <div
@@ -79,6 +82,9 @@ const Sidebar = () => {
                     </Link>
                 ))
             }
+        </div>
+        <div style={{marginLeft:"20px"}}>
+            <button className='button logout-button' onClick={()=>dispatch(AdminLogOut())}>Logout</button>
         </div>
     </div>;
 };

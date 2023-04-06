@@ -1,6 +1,6 @@
 import express from 'express';
-import { blockUser, getPosts, getReports,getPost, getDashboard } from '../controllers/AdminControllers.js';
-import { getAllUsers, getUser } from '../controllers/UserController.js';
+import { blockUser, getPosts,adminLogin, getReports,getPost, getDashboard, blockPost,getAllUsers, getAllBlockedUsers } from '../controllers/AdminControllers.js';
+import { getUser } from '../controllers/UserController.js';
 import ReportReasonModel from '../models/reportReasonModels.js';
 const router = express.Router();
 
@@ -11,6 +11,10 @@ router.get('/getposts/:id',getPosts)
 router.get('/getpost/:id',getPost)
 router.get('/user/:id',getUser)
 router.put('/block/:id',blockUser)
+router.put('/blockpost/:id',blockPost)
+router.post('/login',adminLogin)
+router.get('/blockedusers',getAllBlockedUsers)
+
 
 router.post('/report', async(req,res)=>{
     const reason= await new ReportReasonModel({

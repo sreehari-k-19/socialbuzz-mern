@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
-import { useQuery } from 'react-query';
 import { getAllReports, getPost } from "../../api/request";
 import { ReportDetails } from "../../data/userDetails";
 import { Box, IconButton } from '@mui/material';
@@ -18,12 +17,16 @@ const GetReports = () => {
             setReports(data)
         }
         getRepots()
-    },[])
+    }, [])
     const [postModal, setPostModal] = useState(false)
+    const [post, setPost] = useState({})
     const [postId, setPostId] = useState();
     const columns = useMemo(ReportDetails, []);
-    const getPostinfo = (postId) => {
-        setPostId(postId);
+    const getPostinfo = async (postId) => {
+        const { data } = await getPost(postId);
+        console.log("userpost info",data)
+        setPost(data)
+        // setPostId(postId);
         setPostModal(true);
     }
     return (
@@ -33,7 +36,7 @@ const GetReports = () => {
                     <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '8px' }}>
                         <IconButton
                             color="secondary"
-                            onClick={() => {getPostinfo(row.original.postId)}}
+                            onClick={() => { getPostinfo(row.original.postId) }}
                         >
                             <InfoIcon />
                         </IconButton>
@@ -42,7 +45,7 @@ const GetReports = () => {
             {postModal ? <PostDetails
                 postModal={postModal}
                 setPostModal={setPostModal}
-                postId={postId}
+                post={post}
             /> : null}
         </>
     )

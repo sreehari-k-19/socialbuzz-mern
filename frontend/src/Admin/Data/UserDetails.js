@@ -29,10 +29,19 @@ export const userColumnTitlle=    () => [
     {
       accessorKey: 'totalReports',
       header: 'TotalReports ',
+    }, 
+  ]
+  export const blockedUsers= () => [
+    {
+      accessorKey: 'firstname', //access nested data with dot notation
+      header: 'Name',
     },
     {
-      accessorKey: 'postId',
-      header: 'Details of post ',
-    },
-    
+      accessorKey: 'username', //normal accessorKey
+      header: 'Email',
+    }, 
+    {
+      accessorKey: 'updatedAt',
+      header: 'blocked',
+    }, 
   ]

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, useMantineTheme, ScrollArea } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { getPosts } from '../../api/request';
 import profile from '../../../img/profileImg.jpg'
 import './userdetails.scss';
@@ -15,7 +15,6 @@ const Userdetails = ({ user, modal, setModal }) => {
   useEffect(() => {
     const getpost = async () => {
       const { data } = await getPosts(user._id)
-      console.log("ussssss", data)
       setPosts(data)
     }
     return (() => getpost())
@@ -47,7 +46,7 @@ const Userdetails = ({ user, modal, setModal }) => {
         transitionProps={{ transition: 'fade', duration: 200 }
         }
       >
-        <ScrollArea h={250}>
+        <ScrollArea h={450}>
           <div className="userdetails">
             <div>
               <div>

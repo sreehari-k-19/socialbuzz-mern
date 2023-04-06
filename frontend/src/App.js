@@ -17,11 +17,14 @@ import Dashboard from './Admin/pages/Dashboard/Dashboard';
 import ErrorBoundary from './User/components/error/ErrorBoundary';
 import Reports from './Admin/pages/reports/Reports';
 import Userdetails from './Admin/components/userdetails/Userdetails';
+import Login from './Admin/pages/Login/Login';
+
 
 
 
 function App() {
   const user = useSelector((state) => state.auth.authData);
+  const admintoken = useSelector((state) => state.adminauth.adminAuth);
   return (
     <div className="App">
       <div className="blur" style={{ top: '-18%', right: '0' }}> </div>
@@ -36,12 +39,13 @@ function App() {
           <Route path='/resetpassword/:id/:token' element={<ResetPassword />} />
           <Route path="/forgotpassword" element={<Forgotpassword />} />
           <Route path="/chat" element={user ? <Chat /> : <Navigate to="../auth" />} />
+          <Route path="/admin/login" element={admintoken ? <Navigate to="../admin" /> : <Login />} />
           <Route path='/admin' element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path='/admin/users' element={<Users />} />
-            <Route path='/admin/blockedusers' element={<BlockedUsers />} />
-            <Route path='/admin/allreports' element={<Reports />} />
-            <Route path='/admin/users/:id' element={<Userdetails/>}/>
+            <Route index element={admintoken ? <Dashboard /> : <Navigate to="../admin/login" />} />
+            <Route path='/admin/users' element={admintoken ? <Users /> : <Navigate to="../admin/login" />} />
+            <Route path='/admin/blockedusers' element={admintoken ? <BlockedUsers /> : <Navigate to="../admin/login" />} />
+            <Route path='/admin/allreports' element={admintoken ? <Reports /> : <Navigate to="../admin/login" />} />
+            <Route path='/admin/users/:id' element={<Userdetails />} />
           </Route>
         </Routes>
       </ErrorBoundary>
@@ -52,3 +56,4 @@ function App() {
 }
 
 export default App;
+

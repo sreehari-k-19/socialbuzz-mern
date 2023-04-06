@@ -51,6 +51,7 @@ export const getImageUrl = (folder, image) => {
         Bucket: bucketName,
         Key: `${folder}/${image}`,
     }
+    if(!folder) params.Key =image;
     return new Promise(async (resolve, reject) => {
         const command = new GetObjectCommand(params);
         const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })

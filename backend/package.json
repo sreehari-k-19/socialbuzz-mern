@@ -33,6 +33,7 @@
     "nodemon": "^2.0.20",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "timeago.js": "^4.0.2",
     "uuid": "^9.0.0"
   }
 }

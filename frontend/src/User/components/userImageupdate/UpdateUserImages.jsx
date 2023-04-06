@@ -34,7 +34,7 @@ const UpdateUserImages = ({ showModal, setShowModal, image, cover }) => {
             <div className="changeImage">
                 <h1>hh</h1>
                 <img src={URL.createObjectURL(image)} alt="" />
-                {cover ? <button onClick={handleChangeCover}>cover</button> : <button onClick={handleChangeProfile}>profile</button>}
+                {cover ? <button onClick={handleChangeCover}>Update</button> : <button onClick={handleChangeProfile}>Update</button>}
             </div>
         </Modal>
     )

@@ -17,6 +17,10 @@ const postSchema = mongoose.Schema(
       }
     }],
     image: String,
+    blocked: {
+      type: Boolean,
+      default: false
+    },
   },
   {
     timestamps: true,

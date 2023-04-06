@@ -6,11 +6,18 @@
   }
 }
 .commentsection {
-  padding:0 20px 20px 20px;
+  padding: 0 20px 20px 20px;
   .comments {
     display: flex;
-    gap: 20px;
+   justify-content: space-between;
     border-bottom: 1px solid #888686;
+    & > div:first-child {
+      display: flex;
+      gap: 20px;
+      & > div:first-child {
+        display: flex;
+      }
+    }
     img {
       max-width: 40px;
       min-width: 40px;
@@ -28,7 +35,7 @@
       }
     }
   }
-
+ 
   // .commentsender > div {
   //   padding: 0px 15px 0px 15px;
   // }
@@ -45,7 +52,7 @@
   align-self: end;
   input {
     height: 50%;
-    min-width:50%;
+    min-width: 50%;
     background-color: rgb(236, 236, 236);
     border-radius: 0.5rem;
     border: none;

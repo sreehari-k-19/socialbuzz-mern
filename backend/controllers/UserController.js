@@ -10,11 +10,12 @@ import { getImageUrl, uploadImage } from "../helpers/s3.js";
 
 export const getAllUsers = async (req, res) => {
     try {
-        let users = await UserModel.find()
-        users.map((user) => {
-            const { password, ...otherDetails } = user._doc
-            return otherDetails;
-        })
+       let users = await UserModel.find({ adminblocked: false });
+       console.log(users)
+        users = users.map((user) => {
+            const { password, ...otherDetails } = user._doc;
+            return { ...otherDetails };
+          });
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json(error)

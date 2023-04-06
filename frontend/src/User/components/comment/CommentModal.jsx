@@ -1,15 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Modal, useMantineTheme, ScrollArea } from "@mantine/core";
+import { Modal, useMantineTheme, ScrollArea, Button } from "@mantine/core";
+import { useSelector,useDispatch } from 'react-redux';
+import { ActionIcon } from '@mantine/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import styles from './Commentmodal.module.scss';
 import Post from '../post/Post';
 import InputEmoji from "react-input-emoji";
 import { addComment, getComments } from '../../api/requests';
 import defaultImage from '../../../img/defaultProfile.png'
-import { useSelector } from 'react-redux';
+import { deleteComment } from '../../redux/Slice/PostSlice';
 
 const CommentModal = ({ commetModal, setCommentModal, post }) => {
     const theme = useMantineTheme();
     const { user } = useSelector((state) => state.auth.authData);
+    const dispatch = useDispatch()
     const [newComment, setNewComment] = useState("")
     const [comments, setComments] = useState([])
     const lastCommentRef = useRef(null);
@@ -46,6 +51,13 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
             setComments((prevComments) => prevComments.concat(res.data));
         })
     }
+    const deleteComm =(id,postId)=>{
+        dispatch(deleteComment({id,postId})).then(()=>{
+            setComments(prevComments => {
+                return prevComments.filter(com => com.comments._id !== id);
+              });
+        })
+    }
     return (
         <Modal
             overlayColor={
@@ -70,15 +82,25 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
                         <div key={index} className={styles.commentsection} ref={comments.length - 1 === index ? lastCommentRef : null}>
                             <div className={styles.comments}>
                                 <div>
-                                    <img src={defaultImage} alt="" />
-                                </div>
-                                <div>
-                                    <div className={styles.username}>
-                                        <span>{comment.firstname} {comment.lastname}</span>
-                                        <span>{comment.username}</span>
+                                    <div>
+                                        <img src={defaultImage} alt="" />
                                     </div>
-                                    <p>{comment.comments.comment}</p>
+                                    <div>
+                                        <div className={styles.username}>
+                                            <span>{comment.firstname} {comment.lastname}</span>
+                                            <span>{comment.username}</span>
+                                        </div>
+                                        <p>{comment.comments.comment}</p>
+                                    </div>
                                 </div>
+                                {user._id === comment.comments.userId ? (
+                                    <div className={styles.editbutton}>
+                                        <Button.Group>
+                                            <ActionIcon variant="light"><EditIcon size="1rem" /></ActionIcon>
+                                            <ActionIcon variant="light" onClick={()=>deleteComm(comment.comments._id,post._id) } ><DeleteIcon size="1rem" /></ActionIcon>
+                                        </Button.Group>
+                                    </div>
+                                ) : null}
                             </div>
                         </div>
                     ))
@@ -90,7 +112,7 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
             <div style={{ position: 'fixed', bottom: 0, minWidth: '95%', backgroundColor: 'white' }}>
                 <div className={styles.commentsender}>
                     <InputEmoji value={newComment} onChange={handleChange} />
-                    <div className="button" style={{width:"85px", height:"35px"}} onClick={handleSend} >add</div>
+                    <div className="button" style={{ width: "85px", height: "35px" }} onClick={handleSend} >add</div>
                 </div>
             </div>
 
@@ -99,3 +121,9 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
 }
 
 export default CommentModal;
+
+
+
+
+
+

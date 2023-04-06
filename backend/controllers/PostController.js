@@ -192,7 +192,7 @@ export const getComment = async (req, res) => {
                 }
             }
         ])
-        console.log(comments, comments)
+        console.log("comments", comments)
         res.status(200).json(comments)
     } catch (error) {
         res.status(500).json(error);
@@ -252,7 +252,13 @@ export const getTimelinePosts = async (req, res) => {
             },
             {
                 $unwind: "$followingPosts"
-            }, {
+            },
+            {
+                $match: {
+                    "followingPosts.blocked": false
+                }
+            },
+             {
                 $project: {
                     _id: "$followingPosts._id",
                     userId: "$followingPosts.userId",
@@ -315,4 +321,25 @@ export const getTimelinePosts = async (req, res) => {
     }
 }
 
+/// delete comment
 
+export const deleteComment= async (req,res)=>{
+console.log("commmt dlete",req.params)
+    try {
+        const id = mongoose.Types.ObjectId(req.params.id);
+       const postId= mongoose.Types.ObjectId(req.params.postid)
+        // PostModel.updateOne(
+        //     { _id: postId },
+        //     { $pull: { comments: { _id: id } } }
+        //   )
+        await PostModel.findByIdAndUpdate(
+            postId,
+            { $pull: { comments: { _id: id } } },
+            { new: true }
+          );
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)    
+    }
+}
