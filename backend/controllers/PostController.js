@@ -258,7 +258,7 @@ export const getTimelinePosts = async (req, res) => {
                     "followingPosts.blocked": false
                 }
             },
-             {
+            {
                 $project: {
                     _id: "$followingPosts._id",
                     userId: "$followingPosts.userId",
@@ -279,7 +279,7 @@ export const getTimelinePosts = async (req, res) => {
         const reportPosts = await ReportModel.find({
             'user.userId': mongoose.Types.ObjectId(userId)
         })
-        console.log(reportPosts,"rpp postt")
+        console.log(reportPosts, "rpp postt")
         if (reportPosts) {
             followingPosts = followingPosts.filter(post => !reportPosts.some(report => report.postId.equals(post._id)));
         }
@@ -323,11 +323,11 @@ export const getTimelinePosts = async (req, res) => {
 
 /// delete comment
 
-export const deleteComment= async (req,res)=>{
-console.log("commmt dlete",req.params)
+export const deleteComment = async (req, res) => {
+    console.log("commmt dlete", req.params)
     try {
         const id = mongoose.Types.ObjectId(req.params.id);
-       const postId= mongoose.Types.ObjectId(req.params.postid)
+        const postId = mongoose.Types.ObjectId(req.params.postid)
         // PostModel.updateOne(
         //     { _id: postId },
         //     { $pull: { comments: { _id: id } } }
@@ -336,10 +336,30 @@ console.log("commmt dlete",req.params)
             postId,
             { $pull: { comments: { _id: id } } },
             { new: true }
-          );
+        );
 
     } catch (error) {
         console.log(error)
-        res.status(500).json(error)    
+        res.status(500).json(error)
+    }
+}
+
+// update comment
+
+export const updateComment = async (req, res) => {
+console.log("up com",req.body,req.params.id)
+    const id = mongoose.Types.ObjectId(req.params.id);
+    const postId = mongoose.Types.ObjectId(req.params.postid)
+    const { comment } = req.body;
+    try {
+        const post = await PostModel.findOneAndUpdate(
+            { _id: postId, 'comments._id': id },
+            { $set: { 'comments.$.comment': comment } },
+            { new: true }
+        )
+        res.status(200).json(post)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)
     }
 }

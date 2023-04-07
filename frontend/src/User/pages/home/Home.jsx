@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div className="Home">
       <ProfilSide />
-      <PostSide />
+      <PostSide ownUser={true} />
       <RightSide />
     </div>
   );

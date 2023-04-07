@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Modal, useMantineTheme, ScrollArea, Button } from "@mantine/core";
-import { useSelector,useDispatch } from 'react-redux';
+import { Modal, useMantineTheme, ScrollArea, Tooltip, Button } from "@mantine/core";
+import { useSelector, useDispatch } from 'react-redux';
 import { ActionIcon } from '@mantine/core';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,14 +9,18 @@ import Post from '../post/Post';
 import InputEmoji from "react-input-emoji";
 import { addComment, getComments } from '../../api/requests';
 import defaultImage from '../../../img/defaultProfile.png'
-import { deleteComment } from '../../redux/Slice/PostSlice';
+import { deleteComment, updatecomment } from '../../redux/Slice/PostSlice';
+import CommentEdit from '../commentedit/CommentEdit';
 
 const CommentModal = ({ commetModal, setCommentModal, post }) => {
     const theme = useMantineTheme();
+    const inputRef = useRef(null);
+    const tooltipRef = useRef(null);
     const { user } = useSelector((state) => state.auth.authData);
     const dispatch = useDispatch()
     const [newComment, setNewComment] = useState("")
     const [comments, setComments] = useState([])
+    const [commentEdit, setCommentEdit] = useState(false)
     const lastCommentRef = useRef(null);
     const handleChange = (newMessage) => {
         setNewComment(newMessage)
@@ -51,12 +55,23 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
             setComments((prevComments) => prevComments.concat(res.data));
         })
     }
-    const deleteComm =(id,postId)=>{
-        dispatch(deleteComment({id,postId})).then(()=>{
+    const deleteComm = (id, postId) => {
+        dispatch(deleteComment({ id, postId })).then(() => {
             setComments(prevComments => {
                 return prevComments.filter(com => com.comments._id !== id);
-              });
+            });
         })
+    }
+    const [editcomment, setEditcomment] = useState({})
+    const editComment = (com, postId) => {
+        setNewComment(com.comments.comment)
+        inputRef.current?.focus();
+        setCommentEdit(true)
+        setEditcomment(com.comments._id)
+
+    }
+    const handleUpdate = () => {
+        dispatch(updatecomment({ id: editcomment, postId: post._id, comment: newComment }))
     }
     return (
         <Modal
@@ -96,8 +111,9 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
                                 {user._id === comment.comments.userId ? (
                                     <div className={styles.editbutton}>
                                         <Button.Group>
-                                            <ActionIcon variant="light"><EditIcon size="1rem" /></ActionIcon>
-                                            <ActionIcon variant="light" onClick={()=>deleteComm(comment.comments._id,post._id) } ><DeleteIcon size="1rem" /></ActionIcon>
+                                            {/* <ActionIcon variant="light"><EditIcon size="1rem" onClick={() => editComment(comment, post._id)} /></ActionIcon> */}
+                                            <ActionIcon variant="light"><EditIcon size="1rem" onClick={() => editComment(comment, post._id)} /></ActionIcon>
+                                            <ActionIcon variant="light" onClick={() => deleteComm(comment.comments._id, post._id)} ><DeleteIcon size="1rem" /></ActionIcon>
                                         </Button.Group>
                                     </div>
                                 ) : null}
@@ -107,12 +123,14 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
                 ) : (
                     <p>No comment, Add new</p>
                 )}
-
+                {/* {commentEdit ? <CommentEdit commentEdit={commentEdit} setCommentEdit={setCommentEdit} editcomment={editcomment} /> : null} */}
             </div>
             <div style={{ position: 'fixed', bottom: 0, minWidth: '95%', backgroundColor: 'white' }}>
                 <div className={styles.commentsender}>
-                    <InputEmoji value={newComment} onChange={handleChange} />
-                    <div className="button" style={{ width: "85px", height: "35px" }} onClick={handleSend} >add</div>
+                    <Tooltip  label="Update here!" opened={commentEdit}>
+                        <InputEmoji ref={inputRef} value={newComment} onChange={handleChange} />
+                    </Tooltip>
+                    <div className="button" style={{ width: "85px", height: "35px" }} onClick={() => commentEdit ? handleUpdate() : handleSend()} >{commentEdit ? "update" : "add"}</div>
                 </div>
             </div>
 

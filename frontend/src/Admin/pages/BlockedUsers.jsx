@@ -1,16 +1,17 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState, useCallback } from "react";
 import MaterialReactTable from "material-react-table";
 import { Box, IconButton } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { useDispatch } from "react-redux";
 import LockPersonIcon from '@mui/icons-material/LockPerson';
+import Swal from 'sweetalert2';
 import { fetchblockedUsers } from "../api/request";
 import { blockedUsers } from '../data/userDetails';
 import Userdetails from "../components/userdetails/Userdetails";
 import { blockUser } from "../slice/Adminslice";
 
 const BlockedUsers = () => {
-  const [data, setData] = useState({})
+  const [data, setData] = useState([])
   const [user, setUser] = useState({})
   const [modal, setModal] = useState(false)
   const dispatch = useDispatch()
@@ -26,12 +27,22 @@ const BlockedUsers = () => {
     setUser(original)
     setModal(true)
   }
-  const unBlockeuser = (row) => {
-    dispatch(blockUser(row.original._id)).then(() => {
-      const users = data.filter((user) => user._id !== row.original._id)
-      setData(users)
+  const unBlockeuser = useCallback((row) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You want to unblock this user!",
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, unblock it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(blockUser(row.original._id));
+        setData((prevData) => prevData.filter((item) => item._id !== row.original._id));
+      }
     })
-  }
+
+  }, [dispatch]);
   return (
     <div>
       <MaterialReactTable columns={columns} data={data} enableRowActions positionActionsColumn="last"

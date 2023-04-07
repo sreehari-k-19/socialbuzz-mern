@@ -79,6 +79,14 @@ export const deleteComment = createAsyncThunk('deleteComment', async ({ id, post
         return rejectWithValue(error.response.data)
     }
 })
+export const updatecomment = createAsyncThunk('updatecomment', async ({ id, postId,comment }, { rejectWithValue }) => {
+    try {
+        const { data } = await axios.put(`${BaseUrl}/post/updatecomment/${id}/${postId}`,{comment:comment})
+        return data
+    } catch (error) {
+        return rejectWithValue(error.response.data)
+    }
+})
 
 let toastid;
 const uploadPostSlice = createSlice({

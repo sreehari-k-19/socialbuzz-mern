@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Modal, useMantineTheme, ScrollArea } from "@mantine/core";
 import { useDispatch} from "react-redux";
+import Swal from 'sweetalert2';
 import { getPosts } from '../../api/request';
 import profile from '../../../img/profileImg.jpg'
 import './userdetails.scss';
@@ -19,13 +20,28 @@ const Userdetails = ({ user, modal, setModal }) => {
     }
     return (() => getpost())
   }, [])
+  const blockuser =(id)=>{
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `You want to ${block?"unblock":"block"} this user!`,
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: `Yes, ${block?"unblock":"block"} it!`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(blockUser((id)))
+        setBlock(!block)
+      }
+    })
+  }
   const customTitle = (
     <div className='userdetailsheader'>
       <div>
         <p style={{ fontSize: '17px', color: '#171717' }}>{user.username} details</p>
       </div>
       <div>
-        <button className={block?"button-unblock":"button-block"} onClick={() =>{ dispatch(blockUser((user._id)));setBlock(!block)}}>{block ? "unblock" : "block"}</button></div>
+        <button className={block?"button-unblock":"button-block"} onClick={() =>{ blockuser(user._id) }}>{block ? "unblock" : "block"}</button></div>
     </div>
   );
   return (
