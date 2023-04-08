@@ -7,8 +7,8 @@ import LockPersonIcon from '@mui/icons-material/LockPerson';
 import Swal from 'sweetalert2';
 import { fetchblockedUsers } from "../api/request";
 import { blockedUsers } from '../data/userDetails';
-import Userdetails from "../components/userdetails/Userdetails";
 import { blockUser } from "../slice/Adminslice";
+import Userdetails from "../components/userdetails/Userdetails";
 
 const BlockedUsers = () => {
   const [data, setData] = useState([])
