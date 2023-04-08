@@ -76,14 +76,15 @@ const Chat = () => {
                 <div className="Chat-container">
                     <h2>Chats</h2>
                     <div className="Chat-list">
-                        {chats.map((chat) => (
-                            <div
+                        {chats.map((chat,index) => (
+                            <div key={index}
                                 onClick={() => {
                                     setCurrentChat(chat);
                                 }}
                             >
                                 <Conversation
                                     data={chat}
+                                    
                                     currentUser={user._id}
                                     online={checkOnlineStatus(chat)}
                                 />
