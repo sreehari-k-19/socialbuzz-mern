@@ -3,7 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 import cors from "cors"
-import passport from 'passport';
+import morgan from "morgan";
 import session from 'express-session';
 import AuthRoute from './routes/AuthRoute.js';
 
@@ -45,9 +45,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false
   }));
+  app.use(morgan("common")); 
 
-// app.use(passport.initialize());
-// app.use(passport.session());
 
 app.use('/auth',AuthRoute)  
 app.use('/user',UserRoute)

@@ -51,7 +51,6 @@ export const signUp = createAsyncThunk("auth/signup", async (formData, { rejectW
 
         return response.data;
     } catch (error) {
-        alert("error")
         console.log(error.response.data);
         return rejectWithValue(error.response.data)
     }
@@ -62,7 +61,7 @@ export const logIn = createAsyncThunk("auth/login", async (formData, { rejectWit
         const { data, status } = await axios.post(`${BaseUrl}/auth/login`, formData)
         return { data, status };
     } catch (error) {
-        console.log(error.response.data)
+        console.log("login errror",error)
         return rejectWithValue(error.response)
     }
 })

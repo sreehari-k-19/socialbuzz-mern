@@ -21,6 +21,7 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
     const [newComment, setNewComment] = useState("")
     const [comments, setComments] = useState([])
     const [commentEdit, setCommentEdit] = useState(false)
+    const [tooltip, setTooltip] = useState(false)
     const lastCommentRef = useRef(null);
     const handleChange = (newMessage) => {
         setNewComment(newMessage)
@@ -67,6 +68,7 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
         setNewComment(com.comments.comment)
         inputRef.current?.focus();
         setCommentEdit(true)
+        setTooltip(true)
         setEditcomment(com.comments._id)
 
     }
@@ -123,12 +125,12 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
                 ) : (
                     <p>No comment, Add new</p>
                 )}
-                {/* {commentEdit ? <CommentEdit commentEdit={commentEdit} setCommentEdit={setCommentEdit} editcomment={editcomment} /> : null} */}
             </div>
             <div style={{ position: 'fixed', bottom: 0, minWidth: '95%', backgroundColor: 'white' }}>
                 <div className={styles.commentsender}>
-                    <Tooltip  label="Update here!" opened={commentEdit}>
-                        <InputEmoji ref={inputRef} value={newComment} onChange={handleChange} />
+                    <Tooltip  label="Update here!
+                    " opened={commentEdit}>
+                        <InputEmoji ref={inputRef} value={newComment} onClick={()=>setTooltip(false)} onChange={handleChange} />
                     </Tooltip>
                     <div className="button" style={{ width: "85px", height: "35px" }} onClick={() => commentEdit ? handleUpdate() : handleSend()} >{commentEdit ? "update" : "add"}</div>
                 </div>

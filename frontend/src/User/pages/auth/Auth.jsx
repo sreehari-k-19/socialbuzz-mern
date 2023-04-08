@@ -87,7 +87,7 @@ const Auth = () => {
               display: error ? "block" : "none",
             }}
           >
-            {error}
+            {/* {error} */}
           </span>
           {isSignup && (
             <div>
