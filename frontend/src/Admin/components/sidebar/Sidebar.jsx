@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useDispatch} from "react-redux";
-import './Sidebar.scss';
+// import './Sidebar.scss';
 import { AdminLogOut } from '../../slice/Authadmin';
 
 const sidebarNavItems = [
