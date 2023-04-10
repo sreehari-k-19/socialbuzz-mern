@@ -6,9 +6,10 @@ import { useDispatch } from "react-redux";
 import LockPersonIcon from '@mui/icons-material/LockPerson';
 import Swal from 'sweetalert2';
 import { fetchblockedUsers } from "../api/request";
-import { blockedUsers } from '../data/userDetails';
+
 import { blockUser } from "../slice/Adminslice";
 import Userdetails from "../components/userdetails/Userdetails";
+import { blockedUsers } from "../data/tablecln";
 
 const BlockedUsers = () => {
   const [data, setData] = useState([])

@@ -1,14 +1,12 @@
 import React, { useCallback, useMemo, useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
 import { getAllReports, getPost } from "../../api/request";
-
 import { Box, IconButton } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import InfoIcon from '@mui/icons-material/Info';
-
 import { Delete, Edit } from '@mui/icons-material';
 import PostDetails from "./PostDetails";
-import { ReportDetails } from "../../data/userDetails";
+import {ReportDetails} from "../../data/tablecln"
 
 const GetReports = () => {
     const [reports, setReports] = useState([])
