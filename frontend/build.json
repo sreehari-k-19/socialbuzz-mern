@@ -1,7 +1,7 @@
 {
     "apps": [
         {
-            "name": "client",
+            "name": "frontend",
             "script": "npx",
             "interpreter": "none",
             "args": "serve -s build -p 3000"

@@ -13,7 +13,6 @@ const UserTable = () => {
   const [user, setUser] = useState({})
   const navigate = useNavigate()
   const [modal, setModal] = useState(false)
-  // const { isLoading, error, data } = useQuery('Alluser', getAllUsers);
   useEffect(() => {
     const getUsers = async () => {
       const { data } = await getUserrr();
@@ -27,7 +26,6 @@ const UserTable = () => {
     setUser(original)
     setModal(true)
   }
-  // if (isLoading) return <div>Loadinggg....</div>
   return (
     <>
       <MaterialReactTable columns={columns} data={data} enableRowActions positionActionsColumn="last"
