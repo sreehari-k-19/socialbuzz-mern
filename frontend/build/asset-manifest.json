@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/static/css/main.ba26a458.chunk.css",
-    "main.js": "/static/js/main.58c569ba.chunk.js",
-    "main.js.map": "/static/js/main.58c569ba.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.c3ca2a3f.js",
-    "runtime-main.js.map": "/static/js/runtime-main.c3ca2a3f.js.map",
+    "main.css": "/static/css/main.c587b3ee.chunk.css",
+    "main.js": "/static/js/main.b5c0641e.chunk.js",
+    "main.js.map": "/static/js/main.b5c0641e.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.f7f478f5.js",
+    "runtime-main.js.map": "/static/js/runtime-main.f7f478f5.js.map",
     "static/css/2.b28305bc.chunk.css": "/static/css/2.b28305bc.chunk.css",
-    "static/js/2.7e4102bd.chunk.js": "/static/js/2.7e4102bd.chunk.js",
-    "static/js/2.7e4102bd.chunk.js.map": "/static/js/2.7e4102bd.chunk.js.map",
-    "static/js/3.718415c3.chunk.js": "/static/js/3.718415c3.chunk.js",
-    "static/js/3.718415c3.chunk.js.map": "/static/js/3.718415c3.chunk.js.map",
+    "static/js/2.ae0b1d05.chunk.js": "/static/js/2.ae0b1d05.chunk.js",
+    "static/js/2.ae0b1d05.chunk.js.map": "/static/js/2.ae0b1d05.chunk.js.map",
+    "static/js/3.49b500b4.chunk.js": "/static/js/3.49b500b4.chunk.js",
+    "static/js/3.49b500b4.chunk.js.map": "/static/js/3.49b500b4.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.b28305bc.chunk.css.map": "/static/css/2.b28305bc.chunk.css.map",
-    "static/css/main.ba26a458.chunk.css.map": "/static/css/main.ba26a458.chunk.css.map",
-    "static/js/2.7e4102bd.chunk.js.LICENSE.txt": "/static/js/2.7e4102bd.chunk.js.LICENSE.txt",
+    "static/css/main.c587b3ee.chunk.css.map": "/static/css/main.c587b3ee.chunk.css.map",
+    "static/js/2.ae0b1d05.chunk.js.LICENSE.txt": "/static/js/2.ae0b1d05.chunk.js.LICENSE.txt",
     "static/media/img1.a0fca9c5.png": "/static/media/img1.a0fca9c5.png",
     "static/media/img2.f5f922c9.png": "/static/media/img2.f5f922c9.png",
     "static/media/img3.6b148454.png": "/static/media/img3.6b148454.png",
@@ -22,10 +22,10 @@
     "static/media/socialbuzzlogo.07bd19cc.png": "/static/media/socialbuzzlogo.07bd19cc.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.c3ca2a3f.js",
+    "static/js/runtime-main.f7f478f5.js",
     "static/css/2.b28305bc.chunk.css",
-    "static/js/2.7e4102bd.chunk.js",
-    "static/css/main.ba26a458.chunk.css",
-    "static/js/main.58c569ba.chunk.js"
+    "static/js/2.ae0b1d05.chunk.js",
+    "static/css/main.c587b3ee.chunk.css",
+    "static/js/main.b5c0641e.chunk.js"
   ]
 }
