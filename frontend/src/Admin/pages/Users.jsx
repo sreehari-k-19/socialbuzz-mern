@@ -4,10 +4,12 @@ import UserTable from "../components/usertable/UserTable";
 
 const Users = () => {
 
-    return <>
-        <ErrorBoundary>
-            <UserTable /></ErrorBoundary>
-    </>
+    return (
+        <>
+            <UserTable />
+        </>
+    )
+  
 };
 
 export default Users;
