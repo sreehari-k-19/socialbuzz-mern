@@ -311,10 +311,9 @@ export const getTimelinePosts = async (req, res) => {
             }
             const command = new GetObjectCommand(params);
             const url = await getSignedUrl(s3Client, command, { expiresIn: 7200 })
-            // console.log(url, "image urlll")
+            console.log(url, "image urlll")
             post.image = url
         }
-
         res.status(200).json(posts)
     } catch (error) {
         res.status(500).json(error)
@@ -337,7 +336,7 @@ export const deleteComment = async (req, res) => {
             { $pull: { comments: { _id: id } } },
             { new: true }
         );
-
+            res.status(200).json("deltedted")
     } catch (error) {
         console.log(error)
         res.status(500).json(error)

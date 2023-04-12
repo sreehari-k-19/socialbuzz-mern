@@ -7,6 +7,7 @@ import Heart from "../../../img/Like.png";
 import NotLike from "../../../img/notlike.png";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import "./post.scss";
+import { Skeleton } from '@mantine/core';
 import { useDispatch, useSelector } from "react-redux";
 import { likePost } from "../../api/requests";
 import { deletePost, editPost } from "../../redux/Slice/PostSlice";
@@ -18,7 +19,7 @@ const Post = ({ data }) => {
   const { user } = useSelector((state) => state.auth.authData)
   const dispatch = useDispatch()
   const textareaRef = useRef(null);
-  console.log(data, "post dataa")
+
   const [desc, setDesc] = useState(data.desc)
   const [liked, setLiked] = useState(data.likes.includes(user._id))
   const [likes, setLikes] = useState(data.likes.length)
@@ -106,7 +107,9 @@ const Post = ({ data }) => {
           </ErrorBoundary>
         </div>
       </div>
-      <img src={data.image} alt="" />
+      {/* <Skeleton  height="25rem" width="100%"> */}
+        <img src={data.image} alt="" />
+      {/* </Skeleton> */}
       <div className="postReact">
         <img src={liked ? Heart : NotLike} alt="" onClick={handleLike} />
         <img src={Comment} alt="" onClick={() => setCommentModal(true)} />

@@ -6,7 +6,6 @@ import cors from "cors"
 import morgan from "morgan";
 import session from 'express-session';
 import AuthRoute from './routes/AuthRoute.js';
-
 import UserRoute from './routes/UserRoute.js';
 import PostRoute from './routes/PostRoute.js';
 import UploadRoute from './routes/UploadRoute.js';

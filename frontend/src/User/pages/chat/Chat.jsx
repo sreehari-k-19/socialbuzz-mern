@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import Home from "../../../img/home.png";
-import Noti from "../../../img/noti.png";
 import Comment from "../../../img/comment.png";
 import { Link } from "react-router-dom";
 import { io } from 'socket.io-client';
-import { UilSetting } from "@iconscout/react-unicons";
 import { userChats } from '../../api/requests';
 import Conversation from '../../components/conversation/Conversation';
 import SearchBar from "../../components/searchbar/SearchBar";
@@ -102,8 +100,6 @@ const Chat = () => {
                         <Link to="../home">
                             <img src={Home} alt="" />
                         </Link>
-                        <UilSetting />
-                        <img src={Noti} alt="" />
                         <Link to="../chat">
                             <img src={Comment} alt="" />
                         </Link>

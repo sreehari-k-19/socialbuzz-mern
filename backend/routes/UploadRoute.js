@@ -42,7 +42,6 @@ const upload = multer({ storage: storage })
 router.post('/', upload.single('file'), async (req, res) => {
     let uniqueCode = uuidv4();
     req.body.image = uniqueCode
-    console.log("reqbody", req.body)
     console.log(req.file);
     const uploadParams = {
         Bucket: bucketName,
@@ -54,6 +53,7 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     s3.putObject(uploadParams, async function (err, data) {
         if (err) {
+            console.log("<<<<>>><<>><<><<><>",bucketName,region,accessKeyId,secretAccessKey)
             console.log(err);
         } else {
             console.log(data);

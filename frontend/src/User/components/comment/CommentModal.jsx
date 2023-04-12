@@ -49,7 +49,6 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
     }, [comments]);
 
     const handleSend = (e) => {
-        e.preventDefault()
         let data = { userId: user._id, comment: newComment }
         addComment(post._id, data).then((res) => {
             setNewComment("")
@@ -64,16 +63,20 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
         })
     }
     const [editcomment, setEditcomment] = useState({})
-    const editComment = (com, postId) => {
+    const [index, setIndex] = useState("")
+    const editComment = (com, postId,ind) => {
         setNewComment(com.comments.comment)
         inputRef.current?.focus();
         setCommentEdit(true)
         setTooltip(true)
         setEditcomment(com.comments._id)
-
+        setIndex(ind)
     }
     const handleUpdate = () => {
-        dispatch(updatecomment({ id: editcomment, postId: post._id, comment: newComment }))
+        dispatch(updatecomment({ id: editcomment, postId: post._id, comment: newComment })).then(()=>{
+            comments[index].comments.comment=newComment;
+            setNewComment("")
+        })    
     }
     return (
         <Modal
@@ -114,7 +117,7 @@ const CommentModal = ({ commetModal, setCommentModal, post }) => {
                                     <div className={styles.editbutton}>
                                         <Button.Group>
                                             {/* <ActionIcon variant="light"><EditIcon size="1rem" onClick={() => editComment(comment, post._id)} /></ActionIcon> */}
-                                            <ActionIcon variant="light"><EditIcon size="1rem" onClick={() => editComment(comment, post._id)} /></ActionIcon>
+                                            <ActionIcon variant="light"><EditIcon size="1rem" onClick={() => editComment(comment, post._id,index)} /></ActionIcon>
                                             <ActionIcon variant="light" onClick={() => deleteComm(comment.comments._id, post._id)} ><DeleteIcon size="1rem" /></ActionIcon>
                                         </Button.Group>
                                     </div>
