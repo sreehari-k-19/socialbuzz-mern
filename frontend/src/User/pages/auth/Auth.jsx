@@ -43,26 +43,20 @@ const Auth = () => {
     resetForm()
   }, [isSignup])
   const handlesub = (data) => {
-    console.log("userDataaaa", data)
     if (isSignup) {
       dispatch(signUp(data))
     } else {
       dispatch(logIn(data))
     }
   };
-  const googelScu = (credentialResponse) => {
-    console.log("crdiiiiii", credentialResponse)
-  }
-  const googleFail = (credentialResponse) => {
-    console.log("crdiiiiii", credentialResponse)
-  }
+
   const googelLogin = useGoogleLogin({
     onSuccess: codeResponse => {
-      console.log(codeResponse)
       const { access_token } = codeResponse;
       dispatch(googleRegister(codeResponse))
     }
   });
+
   return (
     <div className="Auth">
       <div className="a-left">
@@ -76,7 +70,7 @@ const Auth = () => {
       {/* rightSide */}
       <div className="a-right">
         {/* onSubmit={handleSubmit} */}
-        <form className="infoForm authForm" onSubmit={handleSubmit(handlesub)} >
+        <form className="infoForm authForm" style={{width:isSignup?"":"300px"}} onSubmit={handleSubmit(handlesub)} >
           <h3>{isSignup ? "Sign up" : "Sign in"}</h3>
           <span
             style={{
@@ -137,6 +131,7 @@ const Auth = () => {
                 type="password"
                 className="infoInput"
                 name="password"
+                style={{width:isSignup?"":"261px",marginRight:isSignup?"":"-16px"}}
                 placeholder="Password"
                 {...register('password')}
                 onChange={handleChange}

@@ -12,11 +12,14 @@ const InfoCard = ({profileData}) => {
   const params = useParams()
   const ProfileUserId = params.id;
   const [modalOpened, setModalOpened] = useState(false)
-  const [following, setFollowing] = useState(profileData?.followers?.includes(toString(user?._id)));
+  // const [following, setFollowing] = useState(profileData?.followers?.includes(toString(user?._id)));
+  const userId = user?._id.toString();
+  const  isFollowing = profileData?.followers || [];
+  const followers = isFollowing.includes(userId);
+  const [following, setFollowing] = useState(followers);
 
-  console.log("userrrr", profileData)
- 
-  console.log("userrrr ffffffff", following)
+  console.log(typeof isFollowing[0])
+  console.log("userrrr ffffffff", following,userId,isFollowing)
   const handleFollow = () => {
     following ? dispatch(unFollowUser({ _id: profileData._id, user })) :
       dispatch(followUser({ _id: profileData._id, user }))

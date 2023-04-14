@@ -22,6 +22,7 @@ const Chat = () => {
 
     useEffect(() => {
         socket.current = io('https://socket.socialbuzz.fun');
+        // socket.current = io('http://localhost:8800');
         socket.current.emit('new-user-add', user._id)
         socket.current.on('get-users', (users) => {
             setOnlineUsers(users)
@@ -71,7 +72,7 @@ const Chat = () => {
             {/* Left Side */}
             <div className="Left-side-chat">
                 <SearchBar />
-                <div className="Chat-container">
+                <div className="Chat-container" style={{marginTop:"100px"}}>
                     <h2>Chats</h2>
                     <div className="Chat-list">
                         {chats.map((chat,index) => (
@@ -101,7 +102,7 @@ const Chat = () => {
                             <img src={Home} alt="" />
                         </Link>
                         <Link to="../chat">
-                            <img src={Comment} alt="" />
+                            <img style={{marginLeft:"50px"}} src={Comment} alt="" />
                         </Link>
                     </div>
                 </div>

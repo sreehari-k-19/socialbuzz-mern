@@ -85,8 +85,10 @@ $small-spinner-dimensions: $main-spinner-dimensions * 0.7; //width and height of
     border-right-color: $basic-dark-color;
     border-top-color: rgba($basic-dark-color, 0);
     border-left-color: rgba($basic-dark-color, 0);
-    top: ($main-spinner-dimensions - $small-spinner-dimensions) / 2;
-    left: ($main-spinner-dimensions - $small-spinner-dimensions) / 2;
+    // top: ($main-spinner-dimensions - $small-spinner-dimensions) / 2;
+    // left: ($main-spinner-dimensions - $small-spinner-dimensions) / 2;
+    top: calc((#{$main-spinner-dimensions} - #{$small-spinner-dimensions}) / 2);
+    left: calc((#{$main-spinner-dimensions} - #{$small-spinner-dimensions}) / 2);
     animation: anti-rotate-animation 0.85s linear 0s infinite;
   }
 }
