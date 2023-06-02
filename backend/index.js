@@ -24,6 +24,7 @@ app.use(cors({origin:[
     "http://socialbuzz.fun",
     "http://localhost:3000",
     "https://api.socialbuzz.fun",
+    "https://socialbuzz-socialmedia.netlify.app",
     "*"
 ]}))
 dotenv.config()
