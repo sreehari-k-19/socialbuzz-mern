@@ -32,9 +32,9 @@ const UpdateUserImages = ({ showModal, setShowModal, image, cover }) => {
             opened={showModal}
             onClose={() => setShowModal(false)}>
             <div className="changeImage">
-                <h1>hh</h1>
+                <h3>{cover?"Update cover":"Update profile"}</h3>
                 <img src={URL.createObjectURL(image)} alt="" />
-                {cover ? <button onClick={handleChangeCover}>Update</button> : <button onClick={handleChangeProfile}>Update</button>}
+                {cover ? <button onClick={handleChangeCover} style={{color:"white"}}>Update</button> : <button style={{color:"white"}} onClick={handleChangeProfile}>Update</button>}
             </div>
         </Modal>
     )

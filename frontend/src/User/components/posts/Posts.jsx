@@ -38,25 +38,25 @@ const Posts = () => {
       }
     })
   }
-  console.log("post ref", posts)
+
 
   let filteredPosts = posts;
   if (id) filteredPosts = posts.filter((post) => post.userId === id);
-
-  return (
-    <InfiniteScroll
-      dataLength={filteredPosts.length}
-      next={fetchPost}
-      hasMore={hasMore}
-      loader={<CircularLoading />}
-    >
-      <div className="Posts">
-        {filteredPosts.map((post, index) => (
-          <Post key={index} data={post} id={index} />
-        ))}
-      </div>
-    </InfiniteScroll>
-  );
+  if (!filteredPosts.length) return <div className='noposts'><h2>No posts, Share your posts</h2></div>
+    return (
+      <InfiniteScroll
+        dataLength={filteredPosts.length}
+        next={fetchPost}
+        hasMore={hasMore}
+        loader={<CircularLoading />}
+      >
+        <div className="Posts">
+          {filteredPosts.map((post, index) => (
+            <Post key={index} data={post} id={index} />
+          ))}
+        </div>
+      </InfiniteScroll>
+    );
 };
 
 export default Posts;

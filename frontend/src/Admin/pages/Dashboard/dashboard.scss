@@ -1,8 +1,13 @@
 .dashboard {
+    display: grid;
+    place-items: center;
+    height: 70vh;
     .countboxs{
         display: flex;
-        gap: 10px;
+        gap: 40px;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: space-evenly;
+        // width: 1000px;
+        
     }
 }

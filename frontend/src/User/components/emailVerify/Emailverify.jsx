@@ -32,7 +32,8 @@ const Emailverify = () => {
         const EmailverifyUrl = async () => {
 
             try {
-                const url = `https://api.socialbuzz.fun/auth/${param.id}/verify/${param.token}`
+                // const url = `https://api.socialbuzz.fun/auth/${param.id}/verify/${param.token}`
+                const url = `http://localhost:5000/auth/${param.id}/verify/${param.token}`
                 console.log(url)
                 const { data } = await axios.get(url)
                 setValidurl(true)

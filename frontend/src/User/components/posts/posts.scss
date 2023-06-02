@@ -5,3 +5,11 @@
     gap: 1rem;
     
 }
+.noposts{
+    display: grid;
+    place-items: center;
+    height: 70vh;
+    h2{
+        color: rgb(0, 102, 255);
+    }
+}

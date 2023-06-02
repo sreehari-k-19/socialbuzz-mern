@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
-import Logo from "../../../img/socialbuzzlogo.png";
+import logo from "../../../img/socialbuzzlogo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { changeForm, logIn, signUp, googleRegister } from "../../redux/Slice/AuthSlice";
 import { useForm } from "react-hook-form";
@@ -60,7 +60,7 @@ const Auth = () => {
   return (
     <div className="Auth">
       <div className="a-left">
-        <img src={Logo} alt="" />
+        <img src={logo} alt="" />
         <div className="Webname">
           <h1>Social Buzz</h1>
           <h6>Explore the ideas throughout the world</h6>
@@ -179,14 +179,12 @@ const Auth = () => {
             <h4>or</h4>
             <div className="line"></div>
           </div>
-          {isSignup ? null :
             <GoogleLogin
               onSuccess={credentialResponse => {
                 console.log(credentialResponse);
                 dispatch(googleRegister(credentialResponse))
               }}
             />
-          }
         </form>
       </div>
 
